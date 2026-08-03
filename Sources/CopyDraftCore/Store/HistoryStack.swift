@@ -41,7 +41,13 @@ public struct HistoryStack {
 
         let cipher: Cipher
         do {
-            cipher = Cipher(key: try KeyStore().loadOrCreate())
+            // Trousseau moderne d'abord, fichier 0600 dans le dossier 0700 en secours :
+            // aucun des deux chemins ne peut ouvrir de fenêtre au démarrage (ADR-11).
+            let secrets = FallbackSecretStore(
+                primary: KeychainSecretStore(),
+                fallback: FileSecretStore(directory: paths.root)
+            )
+            cipher = Cipher(key: try KeyStore(store: secrets).loadOrCreate())
         } catch {
             throw Failure.encryptionKey(error)
         }

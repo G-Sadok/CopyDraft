@@ -253,3 +253,82 @@ struct InaccessibleKeyTests {
         #expect(try keyStore.hasKey(), "la nouvelle clé est lisible")
     }
 }
+
+@Suite("Coffres de secrets")
+struct SecretStoreFallbackTests {
+    /// Coffre qui refuse tout, comme un Trousseau inexploitable.
+    private struct UnusableStore: SecretStore {
+        func data(for account: String) throws -> Data? { throw SecretStoreError.inaccessible }
+        func set(_ data: Data, for account: String) throws {
+            throw SecretStoreError.inaccessible
+        }
+        func remove(_ account: String) throws {}
+    }
+
+    private func makeDirectory() -> URL {
+        let url = FileManager.default.temporaryDirectory
+            .appendingPathComponent("copydraft-secrets-\(UUID().uuidString)", isDirectory: true)
+        try? FileManager.default.createDirectory(
+            at: url, withIntermediateDirectories: true, attributes: [.posixPermissions: 0o700]
+        )
+        return url
+    }
+
+    @Test("Le fichier de secours conserve et rend le secret")
+    func fileStoreRoundTrip() throws {
+        let directory = makeDirectory()
+        defer { try? FileManager.default.removeItem(at: directory) }
+
+        let store = FileSecretStore(directory: directory)
+        #expect(try store.data(for: "clé") == nil)
+
+        try store.set(Data([1, 2, 3]), for: "clé")
+        #expect(try store.data(for: "clé") == Data([1, 2, 3]))
+
+        let attributes = try FileManager.default.attributesOfItem(
+            atPath: directory.appendingPathComponent("clé.key").path
+        )
+        #expect((attributes[.posixPermissions] as? NSNumber)?.int16Value == 0o600)
+
+        try store.remove("clé")
+        #expect(try store.data(for: "clé") == nil)
+    }
+
+    /// Le cas du build de développement : Trousseau inexploitable, l'application démarre
+    /// quand même et n'affiche jamais de fenêtre.
+    @Test("Un Trousseau inexploitable bascule sur le fichier sans erreur")
+    func fallsBackWhenKeychainUnusable() throws {
+        let directory = makeDirectory()
+        defer { try? FileManager.default.removeItem(at: directory) }
+
+        let store = FallbackSecretStore(
+            primary: UnusableStore(), fallback: FileSecretStore(directory: directory)
+        )
+        let keyStore = KeyStore(store: store)
+
+        let first = try keyStore.loadOrCreate()
+        let second = try keyStore.loadOrCreate()
+
+        #expect(first == second, "la clé de secours est relue, pas reforgée à chaque appel")
+        #expect(try keyStore.hasKey())
+    }
+
+    @Test("Le Trousseau reste prioritaire quand il fonctionne")
+    func prefersKeychainWhenAvailable() throws {
+        let directory = makeDirectory()
+        defer { try? FileManager.default.removeItem(at: directory) }
+
+        let keychain = InMemorySecretStore()
+        let store = FallbackSecretStore(
+            primary: keychain, fallback: FileSecretStore(directory: directory)
+        )
+
+        try store.set(Data([9, 9, 9]), for: "clé")
+
+        #expect(try keychain.data(for: "clé") == Data([9, 9, 9]))
+        #expect(
+            try FileSecretStore(directory: directory).data(for: "clé") == nil,
+            "rien n'est écrit sur le disque quand le Trousseau accepte"
+        )
+    }
+}
