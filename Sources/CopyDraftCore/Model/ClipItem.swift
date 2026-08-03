@@ -1,3 +1,4 @@
+import CoreGraphics
 import Foundation
 
 /// Élément d'historique tel que l'interface le manipule.
