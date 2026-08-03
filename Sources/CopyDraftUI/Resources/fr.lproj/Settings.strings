@@ -1,0 +1,78 @@
+/* Fenêtre de réglages (§7) — libellés repris mot pour mot du design system. */
+
+/* Onglets de la barre d'outils */
+"tab.general" = "Général";
+"tab.shortcut" = "Raccourci";
+"tab.popup" = "Popup";
+"tab.privacy" = "Confidentialité";
+"tab.appearance" = "Apparence";
+
+/* Onglet Général */
+"general.startup.label" = "Démarrage :";
+"general.launchAtLogin" = "Ouvrir CopyDraft à la connexion";
+"general.launchAtLogin.error" = "Impossible d'ajouter CopyDraft aux ouvertures de session.";
+"general.historySize.label" = "Taille de l'historique :";
+"general.historySize.unit" = "éléments";
+"general.historySize.help" = "De 10 à 500. Les éléments non épinglés les plus anciens sont supprimés en premier.";
+"general.restart.label" = "Au redémarrage :";
+"general.keepHistory" = "Conserver l'historique";
+"general.keepHistory.help" = "Stocké en local et chiffré. Décoché, l'historique est vidé à chaque extinction.";
+"general.language.label" = "Langue :";
+"general.language.french" = "Français";
+"general.language.english" = "English";
+"general.language.system" = "Système";
+"general.footer %@" = "CopyDraft %@ — traitement 100 %% local";
+
+/* Onglet Raccourci */
+"shortcut.openPopup.label" = "Ouvrir la popup :";
+"shortcut.plainText.label" = "Coller sans mise en forme :";
+"shortcut.quickPaste.label" = "Collage rapide :";
+"shortcut.quickPaste" = "Activer ⌘1 à ⌘9 dans la popup";
+"shortcut.quickPaste.help" = "Actif seulement quand la popup est ouverte : aucun conflit avec les raccourcis de vos apps.";
+"shortcut.footer" = "Cliquez dans le champ puis tapez la combinaison. Les raccourcis réservés par le système sont refusés avec une explication.";
+"shortcut.missing" = "Aucun raccourci d'ouverture : la popup reste accessible par ⌥-clic sur l'icône de la barre de menus.";
+"shortcut.permission.missing" ="Sans l'accès aux fonctions d'accessibilité, le raccourci ouvre la popup mais le collage reste à votre charge avec ⌘V.";
+"shortcut.permission.open" = "Ouvrir les Réglages système";
+"recorder.empty" = "Aucun raccourci";
+"recorder.listening" = "Tapez…";
+
+/* Onglet Popup */
+"popup.position.label" = "Position :";
+"popup.position.cursor" = "Au curseur";
+"popup.position.centered" = "Centrée sur l'écran actif";
+"popup.position.menuBar" = "Sous l'icône de la barre de menus";
+"popup.rows.label" = "Éléments visibles :";
+"popup.rows.help" = "De 5 à 12. Au-delà, la liste défile.";
+"popup.display.label" = "Affichage :";
+"popup.translucent" = "Fond translucide";
+"popup.showSource" = "Afficher l'application source";
+"popup.closeAfterQuickPaste" = "Fermer après un collage rapide ⌘n";
+
+/* Onglet Confidentialité */
+"privacy.capture.label" = "Capture :";
+"privacy.capture" = "Enregistrer l'historique";
+"privacy.sensitive.label" = "Données sensibles :";
+"privacy.sensitive" = "Ignorer les contenus confidentiels";
+"privacy.sensitive.help" = "Toujours actif. Les gestionnaires de mots de passe marquent leur presse-papiers comme transitoire ; CopyDraft ne l'enregistre jamais.";
+"privacy.excluded.label" = "Applications exclues :";
+"privacy.excluded.help" = "Rien de ce qui est copié depuis ces apps n'est enregistré.";
+"privacy.excluded.empty" = "Aucune application exclue.";
+"privacy.excluded.add" = "Ajouter une application";
+"privacy.excluded.remove" = "Retirer l'application sélectionnée";
+"privacy.excluded.panel.prompt" = "Exclure";
+"privacy.excluded.panel.message" = "Choisissez les applications dont le contenu copié ne doit jamais être enregistré.";
+"privacy.history.label" = "Historique :";
+"privacy.clearAll" = "Tout effacer…";
+
+/* Onglet Apparence */
+"appearance.theme.label" = "Thème :";
+"appearance.theme.light" = "Clair";
+"appearance.theme.dark" = "Sombre";
+"appearance.theme.system" = "Système";
+"appearance.theme.help" = "« Système » suit le réglage d'apparence du Mac, y compris le passage automatique au coucher du soleil.";
+"appearance.accent.label" = "Couleur d'accent :";
+"appearance.accent.system" = "Suivre le système";
+"appearance.accent.custom" = "Personnalisée";
+"appearance.motion.label" = "Animations :";
+"appearance.motion" = "Respecter « Réduire les animations »";
+"appearance.motion.help" = "Réglages système → Accessibilité → Affichage.";
