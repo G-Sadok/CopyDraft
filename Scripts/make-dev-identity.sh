@@ -42,18 +42,33 @@ keyUsage = critical,digitalSignature
 extendedKeyUsage = critical,codeSigning
 CONF
 
-openssl req -x509 -newkey rsa:2048 -nodes -days 3650 \
+# LibreSSL du système plutôt qu'un OpenSSL 3 de Homebrew : ce dernier chiffre les .p12 avec
+# des algorithmes que le Trousseau refuse (« MAC verification failed during PKCS12 import »).
+OPENSSL="/usr/bin/openssl"
+
+"$OPENSSL" req -x509 -newkey rsa:2048 -nodes -days 3650 \
 	-keyout "$WORK/key.pem" -out "$WORK/cert.pem" -config "$WORK/openssl.cnf" 2>/dev/null
 
-openssl pkcs12 -export -inkey "$WORK/key.pem" -in "$WORK/cert.pem" \
-	-out "$WORK/identity.p12" -passout pass:copydraft 2>/dev/null
+"$OPENSSL" pkcs12 -export -inkey "$WORK/key.pem" -in "$WORK/cert.pem" \
+	-out "$WORK/identity.p12" -passout pass:copydraft \
+	-certpbe PBE-SHA1-3DES -keypbe PBE-SHA1-3DES -macalg sha1 2>/dev/null
 
 echo "▸ Import dans le trousseau de session…"
 security import "$WORK/identity.p12" -k "$HOME/Library/Keychains/login.keychain-db" \
 	-P copydraft -T /usr/bin/codesign -A
 
+# Sans cette étape, le certificat existe mais n'est pas une identité de signature valide
+# (`security find-identity -v -p codesigning` ne le voit pas) et `codesign` ouvre un dialogue.
 echo "▸ Déclaration du certificat comme racine de confiance (mot de passe demandé)…"
 security add-trusted-cert -r trustRoot -p codeSign \
 	-k "$HOME/Library/Keychains/login.keychain-db" "$WORK/cert.pem"
 
-echo "✓ Identité « $NAME » prête. Rebâtissez avec ./Scripts/build-app.sh"
+echo "▸ Vérification…"
+if security find-identity -v -p codesigning | grep -q "$NAME"; then
+	echo "✓ Identité « $NAME » prête. Rebâtissez avec ./Scripts/build-app.sh"
+else
+	echo "✗ L'identité n'est pas reconnue comme valide pour la signature." >&2
+	echo "  Ouvrez « Trousseaux d'accès », cherchez « $NAME », double-cliquez," >&2
+	echo "  dépliez « Confiance » et réglez « Signature de code » sur « Toujours approuver »." >&2
+	exit 1
+fi
