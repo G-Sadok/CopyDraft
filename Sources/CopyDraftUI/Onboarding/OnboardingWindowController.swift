@@ -65,6 +65,12 @@ public final class OnboardingWindowController {
     public var isVisible: Bool { window?.isVisible ?? false }
 
     public func show() {
+        // Invite système au moment où l'on explique la demande : c'est elle qui inscrit
+        // CopyDraft dans la liste des Réglages système avec la bonne exigence de signature.
+        // Sans elle, l'utilisateur ajoute l'application à la main et peut tomber sur une
+        // entrée héritée d'une signature précédente, qu'aucune bascule ne réveille.
+        AccessibilityPermissionMonitor.requestWithSystemPrompt()
+
         // Le sondage de la permission est ce qui fait basculer la fenêtre toute seule (FR-48).
         permission.start()
         model.refresh()
