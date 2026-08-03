@@ -39,8 +39,10 @@ public final class PopupController {
     public var onDismiss: ((DismissReason) -> Void)?
     /// Commandes clavier acheminées vers la vue.
     public var onCommand: ((PopupCommand) -> Bool)?
-    /// Hauteur souhaitée, calculée par la vue à partir du contenu affiché.
+    /// Hauteur souhaitée à l'ouverture, estimée avant tout affichage.
     public var preferredHeight: (() -> CGFloat)?
+    /// Habillage à ajouter à la hauteur du contenu mesuré : recherche, pied et marges.
+    public var chromeHeight: (() -> CGFloat)?
 
     public init(
         preferences: Preferences,
@@ -126,6 +128,29 @@ public final class PopupController {
         preferences.popupPosition = .menuBar
         show()
         preferences.popupPosition = saved
+    }
+
+    /// Ajuste la fenêtre à la hauteur réellement occupée par la liste.
+    ///
+    /// L'estimation d'ouverture évite tout repositionnement visible ; cette correction, elle,
+    /// se produit dans les 140 ms du fondu, donc invisible aussi.
+    public func applyContentHeight(_ contentHeight: CGFloat) {
+        guard isVisible, contentHeight > 0 else { return }
+        let chrome = chromeHeight?() ?? 0
+        let ceiling = min(
+            CD.Metric.popupHeightMax,
+            Self.visibleFrame(containing: CGPoint(x: panel.frame.midX, y: panel.frame.midY))
+                .height * CD.Metric.popupHeightScreenFraction
+        )
+        let target = min(max(contentHeight + chrome, CD.Metric.popupHeightMin), ceiling)
+
+        var frame = panel.frame
+        guard abs(frame.height - target) > 0.5 else { return }
+
+        // Le coin supérieur reste en place : la popup grandit et rétrécit vers le bas.
+        frame.origin.y += frame.height - target
+        frame.size.height = target
+        panel.setFrame(frame, display: true)
     }
 
     /// Ajuste la hauteur pendant que la popup est ouverte : la liste change avec la recherche.

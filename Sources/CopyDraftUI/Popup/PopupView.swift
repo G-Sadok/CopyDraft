@@ -14,6 +14,7 @@ public struct PopupView: View {
     private let onResumeCapture: () -> Void
     private let onOpenSettings: () -> Void
     private let onClearAll: () -> Void
+    private let onContentHeight: (CGFloat) -> Void
 
     /// Vignettes déjà déchiffrées, indexées par élément : la cellule ne va jamais lire
     /// le disque elle-même.
@@ -25,7 +26,8 @@ public struct PopupView: View {
         preferences: Preferences,
         onResumeCapture: @escaping () -> Void = {},
         onOpenSettings: @escaping () -> Void = {},
-        onClearAll: @escaping () -> Void = {}
+        onClearAll: @escaping () -> Void = {},
+        onContentHeight: @escaping (CGFloat) -> Void = { _ in }
     ) {
         self.model = model
         self.store = store
@@ -33,6 +35,7 @@ public struct PopupView: View {
         self.onResumeCapture = onResumeCapture
         self.onOpenSettings = onOpenSettings
         self.onClearAll = onClearAll
+        self.onContentHeight = onContentHeight
     }
 
     public var body: some View {
@@ -115,6 +118,19 @@ public struct PopupView: View {
                         rows(model.recentItems, offset: model.pinnedItems.count)
                     }
                 }
+                // Hauteur réellement occupée par les cellules : l'estimation d'ouverture
+                // dimensionne la fenêtre d'un coup, cette mesure la corrige au pixel avant
+                // la fin du fondu (§3, FR-20).
+                .background(
+                    GeometryReader { proxy in
+                        Color.clear.preference(
+                            key: PopupContentHeightKey.self, value: proxy.size.height
+                        )
+                    }
+                )
+            }
+            .onPreferenceChange(PopupContentHeightKey.self) { height in
+                onContentHeight(height)
             }
             .scrollIndicators(.automatic)
             .onChange(of: model.selectedID) { _, selected in
@@ -190,6 +206,14 @@ public struct PopupView: View {
             else { continue }
             thumbnails[item.id] = Image(nsImage: image)
         }
+    }
+}
+
+/// Hauteur du contenu de la liste, remontée depuis la vue.
+struct PopupContentHeightKey: PreferenceKey {
+    static let defaultValue: CGFloat = 0
+    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
+        value = max(value, nextValue())
     }
 }
 
