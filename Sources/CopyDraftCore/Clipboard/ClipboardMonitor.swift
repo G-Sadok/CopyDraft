@@ -54,6 +54,12 @@ public final class ClipboardMonitor {
     /// Appelée pour chaque contenu retenu, avec l'application d'où venait la copie.
     public var onCapture: CaptureHandler?
 
+    /// Autorisation de capturer, consultée avant de lire quoi que ce soit du presse-papiers.
+    ///
+    /// C'est le point de branchement de `PrivacyGate` : renvoyer `false` interrompt le cycle
+    /// sans qu'aucune représentation ne soit lue (FR-9). Absent, tout est capturé.
+    public var shouldCapture: ((_ availableTypes: [String], _ source: SourceApp) -> Bool)?
+
     public init(
         pasteboard: PasteboardSource = SystemPasteboard(),
         reader: PasteboardReader = PasteboardReader(),
@@ -109,6 +115,11 @@ public final class ClipboardMonitor {
         // Relevée avant la lecture des représentations : c'est l'application qui a copié
         // qui nous intéresse, pas celle vers laquelle l'utilisateur bascule pendant ce temps.
         let source = frontmostApp.currentApp()
+
+        // Filtre de confidentialité consulté **avant** toute lecture du contenu (FR-9) :
+        // un presse-papiers marqué confidentiel ne doit même pas être lu.
+        if let shouldCapture, !shouldCapture(pasteboard.availableTypes(), source) { return }
+
         guard let content = reader.read(from: pasteboard) else { return }
         onCapture?(content, source)
     }
