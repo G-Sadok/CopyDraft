@@ -54,7 +54,10 @@ public struct OnboardingContent: Sendable, Equatable {
             isGranted: false,
             title: text("denied.title"),
             body: text("denied.body"),
-            items: (1...3).map { text("denied.step.\($0)") },
+            // Quatre étapes et non trois : la quatrième couvre le piège le plus courant —
+            // l'interrupteur déjà activé qui ne change rien, parce que l'autorisation est
+            // liée à une signature précise et qu'une entrée périmée la bloque.
+            items: (1...4).map { text("denied.step.\($0)") },
             primaryTitle: text("denied.primary"),
             secondaryTitle: text("denied.secondary"),
             statusLabel: text("denied.status"),

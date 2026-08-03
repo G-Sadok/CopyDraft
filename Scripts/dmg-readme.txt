@@ -89,6 +89,22 @@
   choisi est simplement placé dans le presse-papiers, et vous le collez
   vous-même avec ⌘V.
 
+  ┌──────────────────────────────────────────────────────────────────────┐
+  │  L'INTERRUPTEUR EST ACTIVÉ MAIS RIEN NE CHANGE ?                     │
+  │                                                                      │
+  │  macOS attache l'autorisation à une signature précise, pas à un nom  │
+  │  d'application. Une entrée laissée par une version précédente reste  │
+  │  visible et cochée, alors qu'elle ne correspond plus à l'application │
+  │  installée : vous cochez, et rien ne se passe.                       │
+  │                                                                      │
+  │  Sélectionnez CopyDraft dans la liste, retirez-le avec le bouton     │
+  │  « − », puis rajoutez-le avec « + » en désignant                     │
+  │  /Applications/CopyDraft.app. Relancez l'application.                │
+  │                                                                      │
+  │  À prévoir aussi après chaque mise à jour, tant que l'application    │
+  │  n'est pas notarisée par Apple.                                      │
+  └──────────────────────────────────────────────────────────────────────┘
+
 
 ────────────────────────────────────────────────────────────────────────────
   ÉTAPE 4 — S'EN SERVIR
@@ -236,6 +252,14 @@
 
   Without it the app still works: the item you pick goes to the clipboard
   and you paste it yourself with ⌘V.
+
+      SWITCH IS ON BUT NOTHING HAPPENS?
+      macOS ties the grant to a precise code signature, not to an app
+      name. An entry left by an earlier version stays listed and ticked
+      while no longer matching the installed app — you tick it and nothing
+      changes. Select CopyDraft in the list, remove it with "−", add it
+      again with "+" pointing at /Applications/CopyDraft.app, and relaunch.
+      Expect this after each update until the app is notarised by Apple.
 
 
   STEP 4 — USE IT
