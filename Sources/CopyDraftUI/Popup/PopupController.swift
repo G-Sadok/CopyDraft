@@ -1,5 +1,6 @@
 import AppKit
 import CopyDraftCore
+import OSLog
 import SwiftUI
 
 /// Ouvre et ferme la popup (FR-19 à FR-25, NFR-3).
@@ -22,6 +23,10 @@ public final class PopupController {
     public var pasteTarget: PasteTarget? { frontmostApp.target }
     /// Mode d'acheminement clavier réellement obtenu à la dernière ouverture.
     public private(set) var keyRoutingMode: KeyEventRouter.Mode = .keyWindow
+
+    /// Journal d'ouverture : mode d'acheminement clavier réellement obtenu, indispensable
+    /// pour comprendre pourquoi une frappe n'arrive pas.
+    private static let log = Logger(subsystem: AppInfo.bundleIdentifier, category: "popup")
 
     private let panel: PopupPanel
     private let hostingView: NSHostingView<AnyView>
@@ -112,9 +117,17 @@ public final class PopupController {
         panel.orderFrontRegardless()
 
         if panel.acceptsKeyStatus {
-            // Mode replié : sans statut de fenêtre clé, aucune touche n'arriverait.
-            panel.makeKey()
+            // Mode replié : un panneau non activant a beau devenir fenêtre clé, il ne reçoit
+            // rien tant que l'application n'est pas active — c'est le système qui dirige les
+            // frappes vers l'application au premier plan. Sans autorisation d'accessibilité,
+            // il faut donc activer CopyDraft, puis rendre le focus à sa fermeture (FR-34).
+            NSApp.activate(ignoringOtherApps: true)
+            panel.makeKeyAndOrderFront(nil)
         }
+
+        Self.log.notice(
+            "popup ouverte — mode \(String(describing: self.keyRoutingMode), privacy: .public), clé \(self.panel.acceptsKeyStatus), active \(NSApp.isActive)"
+        )
 
         animateIn()
         installDismissMonitors()
@@ -184,6 +197,12 @@ public final class PopupController {
         removeDismissMonitors()
         // Le tap clavier ne survit jamais à l'affichage (ADR-6, argument de confiance).
         keyRouter.stop()
+
+        // Mode replié : l'application avait dû passer au premier plan pour recevoir les
+        // frappes, on rend la main à celle que l'utilisateur avait sous les yeux.
+        if panel.acceptsKeyStatus, let target = frontmostApp.target {
+            NSRunningApplication(processIdentifier: target.processIdentifier)?.activate()
+        }
 
         animateOut()
         announce(L.t("popup.accessibility.closed"))

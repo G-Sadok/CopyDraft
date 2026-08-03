@@ -187,3 +187,42 @@ struct KeyEventRouterTests {
         #expect(received == [.deleteSearchCharacter, .deleteSelection])
     }
 }
+
+@MainActor
+@Suite("Mode replié du clavier")
+struct KeyEventRouterFallbackTests {
+    private struct DeniedPermission: AccessibilityPermissionChecking {
+        func isGranted() -> Bool { false }
+    }
+
+    /// Sans autorisation, la popup doit rester pilotable au clavier — c'est le repli
+    /// documenté par FR-34, et il passe par un moniteur local d'événements.
+    @Test("Le mode replié achemine quand même les commandes")
+    func fallbackStillRoutesCommands() {
+        let router = KeyEventRouter(permission: DeniedPermission())
+        var received: [PopupCommand] = []
+        router.onCommand = { received.append($0); return true }
+
+        #expect(router.start() == .keyWindow)
+        #expect(router.handle(keyCode: 0, characters: "3", modifiers: [.command]))
+        #expect(received == [.quickPaste(rank: 3)])
+
+        router.stop()
+        #expect(router.isActive == false)
+    }
+
+    /// Le pavé numérique produit les mêmes caractères : `⌘3` doit marcher des deux côtés
+    /// du clavier.
+    @Test("Le pavé numérique déclenche le même collage rapide")
+    func numericKeypadWorks() {
+        let router = KeyEventRouter(permission: DeniedPermission())
+        var received: [PopupCommand] = []
+        router.onCommand = { received.append($0); return true }
+        _ = router.start()
+
+        // Code 85 : « 3 » du pavé numérique.
+        #expect(router.handle(keyCode: 85, characters: "3", modifiers: [.command]))
+        #expect(received == [.quickPaste(rank: 3)])
+        router.stop()
+    }
+}
