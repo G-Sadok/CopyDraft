@@ -6,6 +6,8 @@
 	<string>fr</string>
 	<key>CFBundleExecutable</key>
 	<string>CopyDraft</string>
+	<key>CFBundleIconFile</key>
+	<string>AppIcon</string>
 	<key>CFBundleIdentifier</key>
 	<string>com.copydraft.CopyDraft</string>
 	<key>CFBundleInfoDictionaryVersion</key>
