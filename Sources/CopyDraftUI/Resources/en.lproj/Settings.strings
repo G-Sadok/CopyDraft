@@ -1,0 +1,78 @@
+/* Settings window (§7). */
+
+/* Toolbar tabs */
+"tab.general" = "General";
+"tab.shortcut" = "Shortcut";
+"tab.popup" = "Popup";
+"tab.privacy" = "Privacy";
+"tab.appearance" = "Appearance";
+
+/* General tab */
+"general.startup.label" = "Startup:";
+"general.launchAtLogin" = "Open CopyDraft at login";
+"general.launchAtLogin.error" = "CopyDraft could not be added to your login items.";
+"general.historySize.label" = "History size:";
+"general.historySize.unit" = "items";
+"general.historySize.help" = "From 10 to 500. The oldest unpinned items are removed first.";
+"general.restart.label" = "On restart:";
+"general.keepHistory" = "Keep history";
+"general.keepHistory.help" = "Stored locally and encrypted. Unchecked, the history is cleared on every shutdown.";
+"general.language.label" = "Language:";
+"general.language.french" = "Français";
+"general.language.english" = "English";
+"general.language.system" = "System";
+"general.footer %@" = "CopyDraft %@ — 100 %% local processing";
+
+/* Shortcut tab */
+"shortcut.openPopup.label" = "Open the popup:";
+"shortcut.plainText.label" = "Paste without formatting:";
+"shortcut.quickPaste.label" = "Quick paste:";
+"shortcut.quickPaste" = "Enable ⌘1 through ⌘9 in the popup";
+"shortcut.quickPaste.help" = "Active only while the popup is open: no conflict with your apps' own shortcuts.";
+"shortcut.footer" = "Click the field, then type the combination. Shortcuts reserved by the system are refused with an explanation.";
+"shortcut.missing" = "No opening shortcut: the popup stays reachable with ⌥-click on the menu bar icon.";
+"shortcut.permission.missing" ="Without accessibility access, the shortcut opens the popup but pasting is up to you with ⌘V.";
+"shortcut.permission.open" = "Open System Settings";
+"recorder.empty" = "No shortcut";
+"recorder.listening" = "Type…";
+
+/* Popup tab */
+"popup.position.label" = "Position:";
+"popup.position.cursor" = "At the pointer";
+"popup.position.centered" = "Centred on the active screen";
+"popup.position.menuBar" = "Below the menu bar icon";
+"popup.rows.label" = "Visible items:";
+"popup.rows.help" = "From 5 to 12. Beyond that, the list scrolls.";
+"popup.display.label" = "Display:";
+"popup.translucent" = "Translucent background";
+"popup.showSource" = "Show the source app";
+"popup.closeAfterQuickPaste" = "Close after a ⌘n quick paste";
+
+/* Privacy tab */
+"privacy.capture.label" = "Capture:";
+"privacy.capture" = "Save history";
+"privacy.sensitive.label" = "Sensitive data:";
+"privacy.sensitive" = "Ignore confidential content";
+"privacy.sensitive.help" = "Always on. Password managers mark their clipboard as transient; CopyDraft never saves it.";
+"privacy.excluded.label" = "Excluded apps:";
+"privacy.excluded.help" = "Nothing copied from these apps is ever saved.";
+"privacy.excluded.empty" = "No excluded app.";
+"privacy.excluded.add" = "Add an app";
+"privacy.excluded.remove" = "Remove the selected app";
+"privacy.excluded.panel.prompt" = "Exclude";
+"privacy.excluded.panel.message" = "Choose the apps whose copied content must never be saved.";
+"privacy.history.label" = "History:";
+"privacy.clearAll" = "Clear all…";
+
+/* Appearance tab */
+"appearance.theme.label" = "Theme:";
+"appearance.theme.light" = "Light";
+"appearance.theme.dark" = "Dark";
+"appearance.theme.system" = "System";
+"appearance.theme.help" = "“System” follows the Mac's appearance setting, including the automatic switch at sunset.";
+"appearance.accent.label" = "Accent colour:";
+"appearance.accent.system" = "Follow the system";
+"appearance.accent.custom" = "Custom";
+"appearance.motion.label" = "Animations:";
+"appearance.motion" = "Respect “Reduce motion”";
+"appearance.motion.help" = "System Settings → Accessibility → Display.";
