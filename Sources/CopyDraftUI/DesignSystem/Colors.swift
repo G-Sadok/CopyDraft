@@ -40,8 +40,19 @@ extension CD {
             light: (0x00_00_00, 0.14), dark: (0xFF_FF_FF, 0.10)
         )
 
+        /// Fond d'un contrôle au repos (bouton secondaire, liste déroulante).
+        public static let bgControl = NSColor.dynamic(
+            light: (0xFF_FF_FF, 1.0), dark: (0xFF_FF_FF, 0.06)
+        )
+        /// Liseré d'un contrôle.
+        public static let borderControl = NSColor.dynamic(
+            light: (0x00_00_00, 0.18), dark: (0xFF_FF_FF, 0.20)
+        )
+
         // Accent et sélection
         public static let accent: NSColor = .controlAccentColor
+        /// Accent assombri de l'état pressé (§2.1, §2.5).
+        public static let accentPressed = NSColor.dynamic(light: 0x00_60_DF, dark: 0x0A_6F_D8)
         public static let selection: NSColor = .selectedContentBackgroundColor
         /// Sélection non emphatique : survol souris et listes inactives.
         public static let selectionUnemphasized: NSColor = .unemphasizedSelectedContentBackgroundColor
@@ -72,7 +83,10 @@ extension CD {
         public static let separator = SwiftUI.Color(nsColor: Palette.separator)
         public static let hairline = SwiftUI.Color(nsColor: Palette.hairline)
 
+        public static let bgControl = SwiftUI.Color(nsColor: Palette.bgControl)
+        public static let borderControl = SwiftUI.Color(nsColor: Palette.borderControl)
         public static let accent = SwiftUI.Color(nsColor: Palette.accent)
+        public static let accentPressed = SwiftUI.Color(nsColor: Palette.accentPressed)
         public static let selection = SwiftUI.Color(nsColor: Palette.selection)
         public static let selectionUnemphasized = SwiftUI.Color(
             nsColor: Palette.selectionUnemphasized
