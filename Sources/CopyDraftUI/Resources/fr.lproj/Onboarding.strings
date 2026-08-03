@@ -1,0 +1,28 @@
+/* Fenêtre d'onboarding (§8) — titre masqué, repris par VoiceOver */
+"window.title" = "Bienvenue dans CopyDraft";
+
+/* État « permission non accordée » (§8) */
+"denied.title" = "Une autorisation à donner";
+"denied.body" = "Pour coller dans l'application active, CopyDraft a besoin de l'accès aux fonctions d'accessibilité de macOS. C'est la seule permission demandée, et rien ne quitte votre Mac.";
+"denied.step.1" = "Ouvrez Réglages système → Confidentialité et sécurité → Accessibilité";
+"denied.step.2" = "Activez l'interrupteur en face de CopyDraft";
+"denied.step.3" = "Revenez ici — la fenêtre se met à jour toute seule";
+"denied.status" = "Permission non accordée";
+"denied.primary" = "Ouvrir les Réglages système";
+"denied.secondary" = "Plus tard";
+"denied.footnote" = "Sans cette autorisation, CopyDraft copie l'élément dans le presse-papiers ; le collage reste à votre charge avec ⌘V.";
+
+/* État « permission accordée » (§8) */
+"granted.title" = "CopyDraft est prêt";
+"granted.body" = "L'historique se remplit dès votre prochaine copie. Appelez-le de n'importe où avec :";
+"granted.point.1" = "Collage automatique dans l'application active";
+"granted.point.2" = "Icône ajoutée à la barre de menus";
+"granted.point.3" = "Mots de passe et contenus confidentiels ignorés";
+"granted.primary" = "Commencer";
+"granted.secondary" = "Ouvrir les réglages";
+
+/* Accessibilité */
+"step.accessibilityLabel" = "Étape %lld";
+"shortcut.accessibilityLabel" = "Raccourci d'ouverture : %@";
+"appMark.accessibilityLabel" = "Icône de CopyDraft";
+"appMark.granted.accessibilityLabel" = "Icône de CopyDraft, permission accordée";

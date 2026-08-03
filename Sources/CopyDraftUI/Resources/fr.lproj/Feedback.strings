@@ -1,0 +1,32 @@
+/* Toasts de retour de collage (§9, FR-34, FR-35) */
+"toast.pasted" = "Collé dans %@";
+"toast.pastedPlainText" = "Collé en texte brut";
+"toast.pinned" = "Élément épinglé";
+"toast.copiedOnly" = "Copié — collez avec ⌘V";
+
+/* Confirmation « Tout effacer » (§9, FR-12) — le décompte est explicite */
+"clearAll.title" = "Effacer tout l'historique ?";
+"clearAll.message.one" = "%lld élément sera supprimé définitivement. Cette action est irréversible.";
+"clearAll.message.other" = "%lld éléments seront supprimés définitivement. Cette action est irréversible.";
+"clearAll.keepPinned.one" = "Conserver le %lld élément épinglé";
+"clearAll.keepPinned.other" = "Conserver les %lld éléments épinglés";
+"clearAll.confirm" = "Tout effacer";
+"clearAll.cancel" = "Annuler";
+
+/* Menu contextuel d'un élément (§9, FR-38) */
+"itemMenu.paste" = "Coller";
+"itemMenu.pastePlainText" = "Coller sans mise en forme";
+"itemMenu.pin" = "Épingler";
+"itemMenu.unpin" = "Désépingler";
+"itemMenu.rename" = "Renommer…";
+"itemMenu.copy" = "Copier";
+"itemMenu.delete" = "Supprimer";
+"itemMenu.excludeApp" = "Ne jamais enregistrer %@…";
+
+/* À propos (§9) */
+"about.title" = "À propos de CopyDraft";
+"about.version" = "Version %@ (%@)";
+"about.tagline" = "Historique de presse-papiers pour macOS. Traitement 100 % local, aucune donnée transmise.";
+"about.website" = "Site web";
+"about.licenses" = "Licences";
+"about.copyright" = "© %@ — Tous droits réservés";
