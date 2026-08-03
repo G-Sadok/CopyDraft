@@ -119,11 +119,12 @@ final class ServiceContainer {
         popup.preferredHeight = { [weak self] in
             guard let self else { return CD.Metric.popupHeightMin }
             let items = self.popupModel.visibleItems
-            return PopupPositioner().height(
-                itemCount: items.count,
+            return CellHeightEstimator.popupHeight(
+                for: items,
+                pinnedCount: items.filter(\.pinned).count,
                 visibleRows: self.preferences.visibleRows,
-                twoLineCount: items.filter(\.isTwoLine).count,
-                visibleFrame: PopupController.visibleFrame(containing: NSEvent.mouseLocation)
+                visibleFrame: PopupController.visibleFrame(containing: NSEvent.mouseLocation),
+                showsPauseBanner: !self.preferences.captureEnabled
             )
         }
 
