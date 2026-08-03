@@ -7,6 +7,7 @@
 "denied.step.1" = "Ouvrez Réglages système → Confidentialité et sécurité → Accessibilité";
 "denied.step.2" = "Activez l'interrupteur en face de CopyDraft";
 "denied.step.3" = "Revenez ici — la fenêtre se met à jour toute seule";
+"denied.step.4" = "Déjà activé et rien ne change ? Retirez CopyDraft de la liste avec « − », puis rajoutez-le";
 "denied.status" = "Permission non accordée";
 "denied.primary" = "Ouvrir les Réglages système";
 "denied.secondary" = "Plus tard";

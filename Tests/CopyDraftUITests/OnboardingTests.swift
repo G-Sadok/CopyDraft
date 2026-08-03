@@ -28,13 +28,13 @@ private final class MutablePermission: AccessibilityPermissionChecking, @uncheck
 @Suite("Onboarding — contenu")
 @MainActor
 struct OnboardingContentTests {
-    @Test("L'état « non accordée » porte les trois étapes, l'indicateur et la note de repli")
+    @Test("L'état « non accordée » porte ses quatre étapes, l'indicateur et la note de repli")
     func deniedState() {
         let content = OnboardingContent.make(isGranted: false, language: "fr")
 
         #expect(content.isGranted == false)
         #expect(content.title == "Une autorisation à donner")
-        #expect(content.items.count == 3)
+        #expect(content.items.count == (content.isGranted ? 3 : 4))
         #expect(content.items[0] == "Ouvrez Réglages système → Confidentialité et sécurité → Accessibilité")
         #expect(content.items[1] == "Activez l'interrupteur en face de CopyDraft")
         #expect(content.items[2] == "Revenez ici — la fenêtre se met à jour toute seule")
@@ -207,7 +207,7 @@ struct OnboardingLocalizationTests {
         let content = OnboardingContent.make(isGranted: isGranted, language: "en")
         #expect(content.title.first?.isUppercase == true)
         #expect(content.items.allSatisfy { !$0.isEmpty })
-        #expect(content.items.count == 3)
+        #expect(content.items.count == (content.isGranted ? 3 : 4))
     }
 }
 

@@ -155,3 +155,35 @@ struct PreferencesTests {
         #expect(Limits.quickPasteSlots == 10)
     }
 }
+
+@MainActor
+@Suite("Mémoire de l'autorisation d'accessibilité")
+struct AccessibilityMemoryTests {
+    private func makeDefaults() -> UserDefaults {
+        let suite = "com.copydraft.tests.\(UUID().uuidString)"
+        let defaults = UserDefaults(suiteName: suite)!
+        defaults.removePersistentDomain(forName: suite)
+        return defaults
+    }
+
+    /// Distinguer « jamais accordée » de « révoquée » est ce qui évite de réafficher
+    /// l'onboarding à chaque lancement chez qui a répondu « Plus tard ».
+    @Test("L'état de l'autorisation survit au redémarrage")
+    func remembersGrant() {
+        let defaults = makeDefaults()
+
+        let first = Preferences(defaults: defaults)
+        #expect(first.accessibilityWasGranted == false, "rien de connu au premier lancement")
+
+        first.accessibilityWasGranted = true
+        #expect(Preferences(defaults: defaults).accessibilityWasGranted)
+    }
+
+    @Test("La réinitialisation oublie aussi l'autorisation")
+    func resetForgets() {
+        let preferences = Preferences(defaults: makeDefaults())
+        preferences.accessibilityWasGranted = true
+        preferences.resetToDefaults()
+        #expect(preferences.accessibilityWasGranted == false)
+    }
+}

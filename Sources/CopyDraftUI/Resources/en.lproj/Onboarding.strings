@@ -7,6 +7,7 @@
 "denied.step.1" = "Open System Settings → Privacy & Security → Accessibility";
 "denied.step.2" = "Turn on the switch next to CopyDraft";
 "denied.step.3" = "Come back here — this window updates on its own";
+"denied.step.4" = "Already on and nothing changes? Remove CopyDraft from the list with \u{201C}\u{2212}\u{201D}, then add it again";
 "denied.status" = "Permission not granted";
 "denied.primary" = "Open System Settings";
 "denied.secondary" = "Later";
