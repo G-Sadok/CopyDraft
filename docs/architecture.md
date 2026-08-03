@@ -280,6 +280,7 @@ confiance).
 |---|---|---|
 | `ClipboardMonitor` | `@MainActor` | `NSPasteboard` et `NSWorkspace` sont lus sur le fil principal ; le tick est un simple `Int` comparé, coût négligeable |
 | `HistoryStore` | `@MainActor`, `@Observable` | Source de vérité de l'interface, mutations synchrones, rendu SwiftUI direct |
+| `HistoryStack` | `@MainActor` | Montage de la persistance avec des erreurs nommées (`directories`, `encryptionKey`, `database`), journalisées dans la Console |
 | `HistoryRepository` | `actor` | GRDB `DatabaseQueue`, écritures transactionnelles, purge, chiffrement |
 | `ImageStore` | `actor` | Écriture/lecture de fichiers, génération de vignettes |
 | `PasteService` | `@MainActor` | Ordonnancement fenêtre → focus → `CGEvent` |
@@ -342,6 +343,7 @@ l'Accessibilité, pas de sandbox (décision §12.1), signature Developer ID, not
 | ADR-7 | `KeyboardShortcuts` pour le raccourci global | Carbon direct ; MASShortcut | Fournit l'enregistreur d'interface et la gestion des conflits demandés par FR-29, licence MIT, maintenu |
 | ADR-8 | Timer de 0,4 s sur `changeCount`, suspendu hors session active | 0,2 s ; observation d'événements | macOS ne notifie pas les changements de presse-papiers. 0,4 s est imperceptible à l'usage et divise par deux le coût d'un sondage à 0,2 s |
 | ADR-9 | Historique borné à 500 | Milliers d'éléments | Cohérent avec le design system, garantit ADR-3 et la fluidité de la liste |
+| ADR-10 | Clé illisible = réinitialisation silencieuse, jamais un blocage ni un arrêt | Dialogue système ; arrêt de l'application | Une invite du Trousseau bloque le démarrage d'un agent (constaté en test réel : blocage dans `SecItemCopyMatching`). L'historique protégé par une clé perdue est irrécupérable de toute façon |
 
 ---
 

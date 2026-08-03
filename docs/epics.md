@@ -30,15 +30,15 @@ que si tout le reste est jugé parfait.
 | E1 | Capture du presse-papiers | 5 | P0 | ✅ terminé |
 | E2 | Historique et persistance chiffrée | 4 | P0 | ✅ terminé |
 | E3 | Popup flottante | 6 | P0 | ✅ terminé |
-| E4 | Collage et permission | 3 | P0 | 🔄 S-4.1 et S-4.2 faites, toasts en cours |
+| E4 | Collage et permission | 3 | P0 | ✅ terminé |
 | E5 | Barre de menus | 2 | P0/P1 | ✅ terminé |
-| E6 | Réglages | 5 | P0/P1 | 🔄 en cours |
-| E7 | Onboarding | 1 | P0 | 🔄 en cours |
-| E8 | Finition : états, mouvement, accessibilité, langues | 4 | P0 | 🔄 langues et états faits |
+| E6 | Réglages | 5 | P0/P1 | ✅ terminé |
+| E7 | Onboarding | 1 | P0 | ✅ terminé |
+| E8 | Finition : états, mouvement, accessibilité, langues | 4 | P0 | 🔄 langues, états et annonces VoiceOver faits |
 | E9 | Performance, livraison, documentation | 4 | P0 | 🔄 icône et docs faites, mesures partielles |
 | E10 | Édition d'élément | 1 | P2 | ⏸ non entamé |
 
-*Dernière mise à jour : 2026-08-03. `dev` compile sans avertissement, 341 tests verts.*
+*Dernière mise à jour : 2026-08-03. `dev` compile sans avertissement, 423 tests verts. Application vérifiée sur un lancement à froid : capture, classification et chiffrement fonctionnels, 0,0 % de CPU au repos.*
 
 ---
 
