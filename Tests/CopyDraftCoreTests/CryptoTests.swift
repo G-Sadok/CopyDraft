@@ -206,3 +206,50 @@ struct AppPathsTests {
         #expect(paths.databaseURL.lastPathComponent == "history.sqlite")
     }
 }
+
+/// Le démarrage ne doit jamais se bloquer ni s'arrêter sur un secret devenu illisible
+/// (signature de l'application changée, Trousseau verrouillé autrement).
+@Suite("Clé illisible au démarrage")
+struct InaccessibleKeyTests {
+    /// Coffre qui simule un secret présent mais refusé sans intervention de l'utilisateur.
+    private final class LockedSecretStore: SecretStore, @unchecked Sendable {
+        private let lock = NSLock()
+        private var stored: Data?
+        private var refuses = true
+        private(set) var removals = 0
+
+        init(seeded: Data) { stored = seeded }
+
+        func data(for account: String) throws -> Data? {
+            if lock.withLock({ refuses }) { throw SecretStoreError.inaccessible }
+            return lock.withLock { stored }
+        }
+
+        func set(_ data: Data, for account: String) throws {
+            lock.withLock {
+                stored = data
+                refuses = false
+            }
+        }
+
+        func remove(_ account: String) throws {
+            lock.withLock {
+                stored = nil
+                removals += 1
+            }
+        }
+    }
+
+    @Test("Une clé illisible est remplacée au lieu de bloquer le démarrage")
+    func inaccessibleKeyIsReplaced() throws {
+        let store = LockedSecretStore(seeded: Data(repeating: 0xAB, count: KeyStore.keyByteCount))
+        let keyStore = KeyStore(store: store)
+
+        #expect(try keyStore.hasKey() == false, "un secret refusé compte comme absent")
+
+        let key = try keyStore.loadOrCreate()
+        #expect(key.bitCount == 256)
+        #expect(store.removals == 1, "l'ancien secret inutilisable est retiré")
+        #expect(try keyStore.hasKey(), "la nouvelle clé est lisible")
+    }
+}
