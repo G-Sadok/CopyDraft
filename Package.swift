@@ -10,7 +10,9 @@ let package = Package(
     ],
     dependencies: [
         // Persistance SQLite : requêtes typées, migrations explicites, observation (ADR-1).
-        .package(url: "https://github.com/groue/GRDB.swift", from: "7.0.0")
+        .package(url: "https://github.com/groue/GRDB.swift", from: "7.0.0"),
+        // Raccourci global + composant d'enregistrement pour les réglages (ADR-7).
+        .package(url: "https://github.com/sindresorhus/KeyboardShortcuts", from: "2.0.0")
     ],
     targets: [
         .target(
@@ -19,7 +21,10 @@ let package = Package(
         ),
         .target(
             name: "CopyDraftUI",
-            dependencies: ["CopyDraftCore"],
+            dependencies: [
+                "CopyDraftCore",
+                .product(name: "KeyboardShortcuts", package: "KeyboardShortcuts")
+            ],
             resources: [.process("Resources")]
         ),
         .executableTarget(name: "CopyDraft", dependencies: ["CopyDraftCore", "CopyDraftUI"]),
