@@ -53,6 +53,11 @@ public actor HistoryRepository {
         self.cipher = cipher
     }
 
+    /// Resserre les permissions des fichiers annexes créés depuis l'ouverture (`-wal`, `-shm`).
+    public func restrictFilePermissions(at url: URL) {
+        HistoryDatabase.restrictPermissions(at: url)
+    }
+
     // MARK: Écritures
 
     /// Insère un élément et son contenu, en une transaction.

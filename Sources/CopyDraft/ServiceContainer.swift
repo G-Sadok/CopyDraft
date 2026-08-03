@@ -70,6 +70,10 @@ final class ServiceContainer {
     }
 
     func stop() {
+        // Les fichiers annexes de SQLite n'existent qu'après la première écriture : c'est
+        // à l'extinction qu'on est sûr de les trouver.
+        HistoryDatabase.restrictPermissions(at: paths.databaseURL)
+
         capture.stop()
         permission.stop()
         popup.hide()
