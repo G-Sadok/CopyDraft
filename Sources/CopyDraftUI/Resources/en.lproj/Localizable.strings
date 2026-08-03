@@ -3,3 +3,25 @@
 
 /* Menu bar icon accessibility */
 "statusItem.accessibilityLabel" = "CopyDraft — clipboard history";
+
+/* Popup search field (§2.3) */
+"popup.search.placeholder" = "Search history";
+"search.clear" = "Clear search";
+
+/* ⌘n shortcut hint (§2.4) */
+"popup.shortcut.accessibilityLabel %lld" = "Command %lld";
+
+/* Information badges (§2.4) */
+"badge.paused" = "PAUSED";
+
+/* Capture paused banner (§5) */
+"popup.pause.banner" = "Capture paused — nothing is being saved.";
+"popup.pause.resume" = "Resume";
+
+/* Empty state — first run (§5) */
+"popup.empty.title" = "Nothing to paste yet";
+"popup.empty.message" = "Copy some text, a link or an image: items will appear here, newest first.";
+
+/* Empty state — no search results (§5) */
+"popup.empty.search.title" = "No results";
+"popup.empty.search.message" = "The search covers item contents and the source app.";
