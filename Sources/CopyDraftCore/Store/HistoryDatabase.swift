@@ -57,11 +57,24 @@ public enum HistoryDatabase {
         }
 
         let queue = try DatabaseQueue(path: url.path, configuration: configuration)
-        try FileManager.default.setAttributes(
-            [.posixPermissions: 0o600], ofItemAtPath: url.path
-        )
         try migrator().migrate(queue)
+        restrictPermissions(at: url)
         return queue
+    }
+
+    /// Resserre les permissions de la base **et de ses fichiers annexes**.
+    ///
+    /// SQLite crée `-wal` et `-shm` avec les permissions par défaut du processus. Le dossier
+    /// parent est en `0700`, ce qui suffit à les rendre inaccessibles, mais un historique
+    /// chiffré mérite la ceinture et les bretelles (NFR-6).
+    public static func restrictPermissions(at url: URL) {
+        for suffix in ["", "-wal", "-shm"] {
+            let path = url.path + suffix
+            guard FileManager.default.fileExists(atPath: path) else { continue }
+            try? FileManager.default.setAttributes(
+                [.posixPermissions: 0o600], ofItemAtPath: path
+            )
+        }
     }
 
     /// Base en mémoire, pour les tests.
