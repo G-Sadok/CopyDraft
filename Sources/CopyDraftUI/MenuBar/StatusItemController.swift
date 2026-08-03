@@ -27,6 +27,18 @@ public final class StatusItemController {
 
     private func makeMenu() -> NSMenu {
         let menu = NSMenu()
+
+        #if DEBUG
+            let gallery = NSMenuItem(
+                title: "Galerie de tokens",  // outil de développement, non localisé
+                action: #selector(showTokenGallery),
+                keyEquivalent: ""
+            )
+            gallery.target = self
+            menu.addItem(gallery)
+            menu.addItem(.separator())
+        #endif
+
         let quit = NSMenuItem(
             title: L.t("menu.quit"),
             action: #selector(NSApplication.terminate(_:)),
@@ -36,4 +48,12 @@ public final class StatusItemController {
         menu.addItem(quit)
         return menu
     }
+
+    #if DEBUG
+        private let tokenGallery = TokenGalleryWindowController()
+
+        @objc private func showTokenGallery() {
+            tokenGallery.show()
+        }
+    #endif
 }
