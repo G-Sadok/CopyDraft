@@ -70,9 +70,11 @@ jobs:
             **Installation**
 
             1. Téléchargez le `.dmg` ci-dessous, glissez CopyDraft dans *Applications*.
-            2. **Premier lancement : clic droit sur CopyDraft → « Ouvrir » → « Ouvrir ».**
-               Ce paquet n'est pas notarisé par Apple : un double-clic afficherait
-               « impossible de vérifier le développeur ». Une seule fois suffit.
+            2. **Premier lancement : macOS refusera d'ouvrir l'application** et proposera
+               « Déplacer vers la corbeille ». Cliquez « Terminé », puis ouvrez *Réglages
+               Système → Confidentialité et sécurité*, section « Sécurité », et cliquez
+               **« Ouvrir quand même »**. Une seule fois suffit. Le disque contient une
+               notice « ⚠️ LISEZ-MOI » qui détaille tout, jusqu'à l'utilisation.
             3. Accordez l'accès aux fonctions d'accessibilité quand l'application le demande :
                c'est la seule permission requise, et elle sert uniquement à coller à votre place.
 
@@ -85,8 +87,10 @@ jobs:
             **Installation**
 
             1. Download the `.dmg` below, drag CopyDraft into *Applications*.
-            2. **First launch: right-click CopyDraft → "Open" → "Open".** This build is not
-               notarised by Apple, so a double-click would refuse to run it. Once is enough.
+            2. **First launch: macOS will refuse to open the app** and offer "Move to Trash".
+               Click "Done", then open *System Settings → Privacy & Security*, "Security"
+               section, and click **"Open Anyway"**. Once is enough. The disk image ships a
+               "⚠️ LISEZ-MOI" notice covering everything, up to daily use.
             3. Grant Accessibility access when asked — the only permission required, used
                solely to paste on your behalf.
 
