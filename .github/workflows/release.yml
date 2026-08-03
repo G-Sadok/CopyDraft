@@ -1,0 +1,93 @@
+name: Release
+
+# Publie une version téléchargeable dès qu'un tag `vX.Y.Z` est poussé.
+#
+# Le paquet produit ici est signé « ad hoc » : GitHub ne dispose ni du certificat Developer ID
+# ni des identifiants de notarisation. Au premier lancement, l'utilisateur passe donc par
+# clic droit → Ouvrir, comme l'explique le README. Pour publier un paquet notarisé, ajouter les
+# secrets correspondants et appeler Scripts/sign-notarize.sh à la place.
+
+on:
+  push:
+    tags:
+      - "v*"
+  # Permet aussi de republier à la main depuis l'onglet Actions.
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Tag à publier (ex. v0.1.0)"
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Sélectionner Xcode
+        # Le Xcode le plus récent présent sur le runner plutôt qu'une version figée : une
+        # image mise à jour ne doit pas casser la publication.
+        run: |
+          XCODE="$(ls -d /Applications/Xcode*.app | sort -V | tail -1)"
+          echo "Xcode retenu : $XCODE"
+          sudo xcode-select -s "$XCODE"
+          swift --version
+
+      - name: Tests
+        run: swift test
+
+      - name: Construire le paquet
+        id: package
+        # L'entrée manuelle passe par l'environnement, jamais par interpolation directe dans
+        # le script : une valeur choisie par l'appelant ne doit pas pouvoir devenir une commande.
+        env:
+          INPUT_TAG: ${{ github.event.inputs.tag }}
+          REF_NAME: ${{ github.ref_name }}
+        run: |
+          RAW="${INPUT_TAG:-$REF_NAME}"
+          VERSION="${RAW#v}"
+          # Format attendu : X.Y.Z, éventuellement suffixé. Tout le reste est refusé.
+          if ! printf '%s' "$VERSION" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+[A-Za-z0-9._-]*$'; then
+            echo "Version invalide : $VERSION" >&2
+            exit 1
+          fi
+          ./Scripts/make-dmg.sh "$VERSION"
+          echo "dmg=dist/CopyDraft-$VERSION.dmg" >> "$GITHUB_OUTPUT"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Publier la version
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.event.inputs.tag || github.ref_name }}
+          name: CopyDraft ${{ steps.package.outputs.version }}
+          files: ${{ steps.package.outputs.dmg }}
+          body: |
+            Historique de presse-papiers pour macOS — le geste `Win + V`, sur un Mac.
+
+            **Installation**
+
+            1. Téléchargez le `.dmg` ci-dessous, glissez CopyDraft dans *Applications*.
+            2. **Premier lancement : clic droit sur CopyDraft → « Ouvrir » → « Ouvrir ».**
+               Ce paquet n'est pas notarisé par Apple : un double-clic afficherait
+               « impossible de vérifier le développeur ». Une seule fois suffit.
+            3. Accordez l'accès aux fonctions d'accessibilité quand l'application le demande :
+               c'est la seule permission requise, et elle sert uniquement à coller à votre place.
+
+            Puis `⇧⌘V` depuis n'importe quelle application.
+
+            ---
+
+            Clipboard history for macOS — the `Win + V` gesture, on a Mac.
+
+            **Installation**
+
+            1. Download the `.dmg` below, drag CopyDraft into *Applications*.
+            2. **First launch: right-click CopyDraft → "Open" → "Open".** This build is not
+               notarised by Apple, so a double-click would refuse to run it. Once is enough.
+            3. Grant Accessibility access when asked — the only permission required, used
+               solely to paste on your behalf.
+
+            Then press `⇧⌘V` from any application.

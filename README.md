@@ -1,5 +1,7 @@
 # CopyDraft
 
+*[English version](README.en.md)*
+
 Historique de presse-papiers pour macOS. Le geste `Win + V` de Windows, sur un Mac : un
 raccourci, une petite fenêtre au curseur, l'élément revient là où vous travaillez.
 
@@ -21,8 +23,9 @@ télémétrie. L'historique est chiffré sur le disque.
 
 ## Installation
 
-1. Téléchargez **[`releases/CopyDraft-0.1.0.dmg`](releases/CopyDraft-0.1.0.dmg)**, ouvrez-le,
-   glissez **CopyDraft** dans *Applications*.
+1. Téléchargez le paquet depuis la **[page des versions](../../releases)** — ou directement
+   **[`releases/CopyDraft-0.1.0.dmg`](releases/CopyDraft-0.1.0.dmg)** — ouvrez-le, glissez
+   **CopyDraft** dans *Applications*.
 2. **Premier lancement : clic droit sur CopyDraft → « Ouvrir » → « Ouvrir ».** Un double-clic
    afficherait « impossible de vérifier le développeur » : ce paquet est signé localement mais
    pas notarisé par Apple, faute de compte développeur payant. Cette manipulation n'est
@@ -174,6 +177,20 @@ NOTARY_PROFILE="copydraft" \
 | `design-system/` | Design system de référence et `tokens.json`, source de vérité visuelle |
 | `docs/` | Brief produit, PRD, architecture, UX, epics et stories |
 | `Scripts/` | Build du bundle, icône, signature et notarisation |
+
+## Publier une version
+
+Un tag `vX.Y.Z` poussé sur le dépôt déclenche `.github/workflows/release.yml`, qui exécute les
+tests, construit le paquet universel et **publie une version téléchargeable** sur la page des
+versions de GitHub. Le paquet produit par l'automate est signé *ad hoc* : il n'est pas
+notarisé, faute de certificat Developer ID côté GitHub.
+
+```sh
+git tag -a v0.2.0 -m "CopyDraft v0.2.0"
+git push origin v0.2.0
+```
+
+La publication peut aussi être relancée à la main depuis l'onglet *Actions* du dépôt.
 
 ## Feuille de route
 
