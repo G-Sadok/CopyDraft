@@ -68,10 +68,12 @@ public struct CGEventKeystrokeSynthesizer: KeystrokeSynthesizing {
         keyDown.flags = .maskCommand
         keyUp.flags = .maskCommand
 
-        // Envoi ciblé sur le processus : plus sûr qu'un post global, qui suivrait le focus
-        // s'il avait bougé entre-temps.
-        keyDown.postToPid(processIdentifier)
-        keyUp.postToPid(processIdentifier)
+        // Publication sur le tap HID plutôt que `postToPid` : constaté en test réel, un
+        // événement adressé à un processus précis est ignoré par nombre d'applications, qui
+        // ne lisent que la file d'événements du système. L'appelant a réactivé la cible
+        // juste avant, l'événement lui parvient donc bien.
+        keyDown.post(tap: .cghidEventTap)
+        keyUp.post(tap: .cghidEventTap)
         return true
     }
 }
@@ -83,11 +85,14 @@ public struct CGEventKeystrokeSynthesizer: KeystrokeSynthesizing {
 /// toast invite à coller à la main (FR-34) : jamais d'erreur bloquante.
 @MainActor
 public final class PasteService {
-    /// Délai laissé au système pour réactiver l'application avant la frappe.
+    /// Pas d'attente entre deux vérifications du retour au premier plan.
+    static let activationPollInterval: Duration = .milliseconds(20)
+    /// Délai maximal accordé au système pour réactiver l'application visée.
     ///
-    /// Sans cette respiration, `⌘V` peut partir alors que le focus n'est pas encore revenu et
-    /// se perdre. 60 ms restent sous le seuil de perception.
-    public static let focusRestoreDelay: Duration = .milliseconds(60)
+    /// L'activation est asynchrone : `⌘V` parti trop tôt se perd. On attend donc que la
+    /// cible soit effectivement au premier plan, sans jamais dépasser ce plafond — au-delà,
+    /// mieux vaut un collage manqué qu'une popup figée.
+    public static let focusRestoreTimeout: Duration = .milliseconds(400)
 
     private let writer: PasteboardWriting
     private let synthesizer: KeystrokeSynthesizing
@@ -118,11 +123,25 @@ public final class PasteService {
         guard permission.isGranted(), let target else { return .copiedOnly }
 
         _ = activate(target.processIdentifier)
-        try? await Task.sleep(for: Self.focusRestoreDelay)
+        await waitForActivation(of: target.processIdentifier)
 
         guard synthesizer.sendCommandV(to: target.processIdentifier) else { return .copiedOnly }
         return plainTextOnly
             ? .pastedPlainText(appName: target.name) : .pasted(appName: target.name)
+    }
+
+    /// Attend que l'application visée soit réellement au premier plan.
+    private func waitForActivation(of processIdentifier: pid_t) async {
+        let deadline = ContinuousClock.now + Self.focusRestoreTimeout
+        while ContinuousClock.now < deadline {
+            if isFrontmost(processIdentifier) { return }
+            try? await Task.sleep(for: Self.activationPollInterval)
+        }
+    }
+
+    /// Vrai si le processus visé est celui au premier plan. Remplaçable pour les tests.
+    var isFrontmost: @MainActor (pid_t) -> Bool = { pid in
+        NSWorkspace.shared.frontmostApplication?.processIdentifier == pid
     }
 
     /// Copie seule, sans collage : action « Copier » du menu contextuel (§9).
