@@ -80,11 +80,7 @@ final class ServiceContainer {
 
         Task { await store.restore() }
 
-        // Premier lancement, ou autorisation révoquée depuis : l'onboarding est la seule
-        // fenêtre plein format de l'application (FR-47).
-        if !preferences.hasCompletedOnboarding || !permission.isGranted {
-            onboarding.show()
-        }
+        showOnboardingIfNeeded()
     }
 
     func stop() {
@@ -204,6 +200,33 @@ final class ServiceContainer {
         shortcuts.start()
     }
 
+    /// Décide s'il faut ouvrir l'onboarding, et seulement alors (FR-47).
+    ///
+    /// Trois cas, et trois seulement :
+    /// - **premier lancement** : l'utilisateur n'a jamais vu l'écran ;
+    /// - **révocation** : l'autorisation était accordée, elle ne l'est plus ;
+    /// - jamais autrement. Un utilisateur qui a répondu « Plus tard » ne doit pas retrouver
+    ///   la même fenêtre à chaque démarrage — c'est ce harcèlement qu'on corrige ici.
+    ///
+    /// L'état est relu juste avant de décider : au lancement, l'autorisation met parfois un
+    /// instant à être connue du système, et un écran affiché sur cette lecture prématurée
+    /// donnerait à croire qu'une autorisation pourtant accordée n'a pas été prise en compte.
+    private func showOnboardingIfNeeded() {
+        permission.refresh()
+        let granted = permission.isGranted
+
+        if granted {
+            preferences.accessibilityWasGranted = true
+            return
+        }
+
+        let revoked = preferences.accessibilityWasGranted
+        guard !preferences.hasCompletedOnboarding || revoked else { return }
+
+        preferences.accessibilityWasGranted = false
+        onboarding.show()
+    }
+
     private func wireWindows() {
         settings.onClearAll = { [weak self] in self?.clearAll() }
         settings.onOpenAccessibilitySettings = {
@@ -219,8 +242,16 @@ final class ServiceContainer {
         // et l'utilisateur doit le savoir (FR-47, S-4.1).
         permission.onChange = { [weak self] granted in
             guard let self else { return }
+            self.preferences.accessibilityWasGranted = granted
+
+            // Une révocation en cours d'usage mérite l'écran : le collage vient de se replier
+            // sous les doigts de l'utilisateur, il faut le lui dire.
             if !granted, self.preferences.hasCompletedOnboarding {
                 self.onboarding.show()
+            }
+            // Autorisation accordée pendant que l'écran est ouvert : il a fait son office.
+            if granted, self.onboarding.isVisible {
+                self.preferences.hasCompletedOnboarding = true
             }
         }
     }

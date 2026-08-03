@@ -28,6 +28,7 @@ public final class Preferences {
         case accentFollowsSystem
         case pollingInterval
         case hasCompletedOnboarding
+        case accessibilityWasGranted
     }
 
     @ObservationIgnored private let defaults: UserDefaults
@@ -171,6 +172,17 @@ public final class Preferences {
         }
     }
 
+    /// Dernier état connu de l'autorisation d'accessibilité.
+    ///
+    /// Sert à distinguer une **révocation** — l'autorisation était là, elle ne l'est plus, il
+    /// faut le dire — d'une autorisation simplement jamais accordée, où l'utilisateur a déjà
+    /// répondu « Plus tard » et n'a pas à revoir la même fenêtre à chaque lancement.
+    public var accessibilityWasGranted: Bool {
+        didSet {
+            defaults.set(accessibilityWasGranted, forKey: Key.accessibilityWasGranted.rawValue)
+        }
+    }
+
     /// L'onboarding a déjà été mené à son terme (FR-47).
     public var hasCompletedOnboarding: Bool {
         didSet {
@@ -224,6 +236,9 @@ public final class Preferences {
         hasCompletedOnboarding = defaults.bool(
             forKey: Key.hasCompletedOnboarding.rawValue, default: false
         )
+        accessibilityWasGranted = defaults.bool(
+            forKey: Key.accessibilityWasGranted.rawValue, default: false
+        )
     }
 
     /// Remet tous les réglages à leurs valeurs par défaut.
@@ -249,6 +264,7 @@ public final class Preferences {
         accentFollowsSystem = fresh.accentFollowsSystem
         pollingInterval = fresh.pollingInterval
         hasCompletedOnboarding = fresh.hasCompletedOnboarding
+        accessibilityWasGranted = fresh.accessibilityWasGranted
     }
 
     /// Identifiants de bundle : sans doublon, sans vide, ordre stable.
