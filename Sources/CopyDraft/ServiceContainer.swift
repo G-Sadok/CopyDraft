@@ -56,6 +56,9 @@ final class ServiceContainer {
     /// Branche les services entre eux, puis démarre capture, raccourcis et surveillance
     /// de l'autorisation.
     func start() {
+        // Une seule langue pour les chaînes et les formateurs (FR-44).
+        L.setLanguage(preferences.language)
+
         wirePopup()
         wireStatusItem()
         wireShortcuts()
@@ -75,6 +78,33 @@ final class ServiceContainer {
     // MARK: Branchements
 
     private func wirePopup() {
+        popup.setContent(
+            PopupView(
+                model: popupModel,
+                store: store,
+                preferences: preferences,
+                onResumeCapture: { [weak self] in
+                    guard let self else { return }
+                    self.preferences.captureEnabled.toggle()
+                },
+                onOpenSettings: { [weak self] in self?.openSettings() },
+                onClearAll: { [weak self] in self?.clearAll() }
+            )
+        )
+
+        // Hauteur recalculée à chaque ouverture et à chaque frappe : la liste change, la
+        // popup suit, sans jamais dépasser 60 % de l'écran (FR-20).
+        popup.preferredHeight = { [weak self] in
+            guard let self else { return CD.Metric.popupHeightMin }
+            let items = self.popupModel.visibleItems
+            return PopupPositioner().height(
+                itemCount: items.count,
+                visibleRows: self.preferences.visibleRows,
+                twoLineCount: items.filter(\.isTwoLine).count,
+                visibleFrame: PopupController.visibleFrame(containing: NSEvent.mouseLocation)
+            )
+        }
+
         popupModel.actions = PopupViewModel.Actions(
             paste: { [weak self] item, plainTextOnly in
                 self?.pasteItem(item, plainTextOnly: plainTextOnly)
@@ -145,6 +175,17 @@ final class ServiceContainer {
         Task { [weak self] in
             guard let self, let content = await self.store.content(for: item.id) else { return }
             _ = await self.paste.paste(content, into: target, plainTextOnly: plainTextOnly)
+        }
+    }
+
+    /// Ouvre les réglages. Branché par l'epic E6.
+    private func openSettings() {}
+
+    /// Vide l'historique après confirmation. Branché par l'epic E7 (§9).
+    private func clearAll() {
+        Task { [weak self] in
+            guard let self else { return }
+            await self.store.clearAll(keepingPinned: self.preferences.clearAllKeepsPinned)
         }
     }
 

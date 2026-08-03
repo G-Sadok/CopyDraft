@@ -222,7 +222,7 @@ public final class PopupController {
     // MARK: Écrans
 
     /// Zone utile de l'écran du curseur, barre de menus et Dock exclus.
-    static func visibleFrame(containing point: CGPoint) -> CGRect {
+    public static func visibleFrame(containing point: CGPoint) -> CGRect {
         let screens = NSScreen.screens
         let screen = screens.first { $0.frame.contains(point) } ?? NSScreen.main ?? screens.first
         return screen?.visibleFrame ?? CGRect(x: 0, y: 0, width: 1_440, height: 900)

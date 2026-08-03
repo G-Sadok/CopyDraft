@@ -85,3 +85,31 @@ struct LocalizationAuditTests {
         }
     }
 }
+
+/// Le réglage de langue doit gouverner **à la fois** les chaînes et les formateurs :
+/// une interface anglaise ne doit pas afficher « il y a 4 min ».
+@Suite("Réglage de langue")
+struct LanguageSelectionTests {
+    @Test("Choisir une langue change les chaînes et la locale ensemble")
+    func languageDrivesBoth() {
+        L.setLanguage(.french)
+        #expect(L.locale.language.languageCode?.identifier == "fr")
+        let french = L.t("popup.section.pinned")
+
+        L.setLanguage(.english)
+        #expect(L.locale.language.languageCode?.identifier == "en")
+        let english = L.t("popup.section.pinned")
+
+        #expect(french == "Épinglés")
+        #expect(english == "Pinned")
+
+        L.setLanguage(.system)
+    }
+
+    @Test("« Système » rend la main aux réglages du Mac")
+    func systemFollowsMac() {
+        L.setLanguage(.system)
+        #expect(L.locale == .current)
+        #expect(L.bundle == Bundle.module)
+    }
+}
