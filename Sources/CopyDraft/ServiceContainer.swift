@@ -26,6 +26,7 @@ final class ServiceContainer {
     let settings: SettingsWindowController
     let onboarding: OnboardingWindowController
     let toasts = ToastPresenter()
+    let about = AboutPanel()
 
     /// Journal de démarrage. Une erreur ici prive l'application de tout ce qu'elle promet :
     /// elle doit être lisible dans la Console, jamais avalée par un `try?`.
@@ -164,6 +165,7 @@ final class ServiceContainer {
             underStatusItem ? self.popup.showUnderStatusItem() : self.popup.show()
         }
         statusItem.onOpenSettings = { [weak self] in self?.openSettings() }
+        statusItem.onAbout = { [weak self] in self?.about.show() }
         statusItem.onClearAll = { [weak self] in self?.clearAll() }
         statusItem.onPaste = { [weak self] id in
             guard let self, let item = self.store.items.first(where: { $0.id == id }) else { return }
