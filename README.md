@@ -23,13 +23,17 @@ télémétrie. L'historique est chiffré sur le disque.
 
 ## Installation
 
-1. Téléchargez le paquet depuis la **[page des versions](../../releases)** — ou directement
-   **[`releases/CopyDraft-0.1.0.dmg`](releases/CopyDraft-0.1.0.dmg)** — ouvrez-le, glissez
-   **CopyDraft** dans *Applications*.
-2. **Premier lancement : clic droit sur CopyDraft → « Ouvrir » → « Ouvrir ».** Un double-clic
-   afficherait « impossible de vérifier le développeur » : ce paquet est signé localement mais
-   pas notarisé par Apple, faute de compte développeur payant. Cette manipulation n'est
-   nécessaire qu'une fois.
+1. Téléchargez le paquet depuis la **[page des versions](../../releases/latest)**, ouvrez-le,
+   glissez **CopyDraft** dans *Applications*.
+2. **Premier lancement : macOS refuse d'ouvrir l'application** et propose « Déplacer vers la
+   corbeille » — ce paquet n'est pas notarisé par Apple, faute de compte développeur payant.
+   Cliquez « Terminé », puis ouvrez *Réglages Système → Confidentialité et sécurité*,
+   descendez jusqu'à la section « Sécurité » et cliquez **« Ouvrir quand même »**. Confirmez.
+   Une seule fois suffit. (Depuis macOS 15, le clic droit → « Ouvrir » ne contourne plus ce
+   refus.) En Terminal, l'équivalent tient en une ligne :
+   `xattr -dr com.apple.quarantine /Applications/CopyDraft.app`
+
+   Le `.dmg` contient une notice « ⚠️ LISEZ-MOI » qui détaille toute la procédure.
 3. CopyDraft demande l'accès aux **fonctions d'accessibilité**. Cliquez « Ouvrir Réglages
    Système », activez l'interrupteur en face de CopyDraft. C'est la **seule** permission
    demandée, et elle sert uniquement à coller à votre place.

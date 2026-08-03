@@ -23,11 +23,16 @@ disk.
 
 ## Installation
 
-1. Download **[`releases/CopyDraft-0.1.0.dmg`](releases/CopyDraft-0.1.0.dmg)** — or grab it
-   from the [Releases page](../../releases) — open it, drag **CopyDraft** into *Applications*.
-2. **First launch: right-click CopyDraft → "Open" → "Open".** A double-click would say the
-   developer cannot be verified: this build is signed locally but not notarised by Apple, for
-   want of a paid developer account. You only have to do this once.
+1. Download the package from the **[Releases page](../../releases/latest)**, open it, drag
+   **CopyDraft** into *Applications*.
+2. **First launch: macOS refuses to open the app** and offers "Move to Trash" — this build is
+   not notarised by Apple, for want of a paid developer account. Click "Done", then open
+   *System Settings → Privacy & Security*, scroll to the "Security" section and click
+   **"Open Anyway"**. Confirm. Once is enough. (Since macOS 15, right-click → "Open" no longer
+   bypasses this.) The Terminal equivalent is one line:
+   `xattr -dr com.apple.quarantine /Applications/CopyDraft.app`
+
+   The `.dmg` ships a "⚠️ LISEZ-MOI" notice walking through the whole procedure.
 3. CopyDraft asks for **Accessibility** access. Click "Open System Settings" and turn on the
    switch next to CopyDraft. This is the **only** permission it asks for, and it exists solely
    so the app can paste on your behalf.
