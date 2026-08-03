@@ -12,7 +12,22 @@ import SwiftUI
 /// replié, faute d'autre moyen de recevoir les touches.
 public final class PopupPanel: NSPanel {
     /// Vrai en mode replié : le panneau doit alors devenir fenêtre clé pour recevoir le clavier.
-    public var acceptsKeyStatus = false
+    ///
+    /// Le style suit : `.nonactivatingPanel` interdit **par construction** à la fenêtre
+    /// d'activer son application. Tant qu'il est posé, un panneau a beau devenir « clé », le
+    /// système continue d'envoyer les frappes à l'application au premier plan. Sans
+    /// autorisation d'accessibilité, il faut donc lever ce style — au prix du focus, ce qui
+    /// est précisément le repli documenté par FR-34.
+    public var acceptsKeyStatus = false {
+        didSet {
+            guard acceptsKeyStatus != oldValue else { return }
+            if acceptsKeyStatus {
+                styleMask.remove(.nonactivatingPanel)
+            } else {
+                styleMask.insert(.nonactivatingPanel)
+            }
+        }
+    }
 
     public override var canBecomeKey: Bool { acceptsKeyStatus }
     public override var canBecomeMain: Bool { false }

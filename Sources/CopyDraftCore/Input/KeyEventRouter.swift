@@ -1,4 +1,5 @@
 import AppKit
+import OSLog
 
 /// Achemine les frappes vers la popup **sans que celle-ci prenne le focus** (ADR-6).
 ///
@@ -27,10 +28,15 @@ public final class KeyEventRouter {
     public private(set) var isActive = false
     public private(set) var mode: Mode = .keyWindow
 
+    /// Journal réduit au mode d'acheminement obtenu : de quoi comprendre un « le clavier ne
+    /// répond pas » en assistance, sans jamais consigner ce qui est tapé.
+    private static let log = Logger(subsystem: AppInfo.bundleIdentifier, category: "clavier")
+
     private let mapper = KeyCommandMapper()
     private let permission: AccessibilityPermissionChecking
     private var tap: CFMachPort?
     private var runLoopSource: CFRunLoopSource?
+    private var localMonitor: Any?
 
     /// Contexte de décision fourni par la popup à chaque frappe.
     public var isSearchEmpty: () -> Bool = { true }
@@ -45,7 +51,26 @@ public final class KeyEventRouter {
     public func start() -> Mode {
         guard !isActive else { return mode }
 
-        guard permission.isGranted(), let tap = makeTap() else {
+        let granted = permission.isGranted()
+        let tap = granted ? makeTap() : nil
+        Self.log.notice(
+            "démarrage du clavier — autorisé \(granted, privacy: .public), tap \(tap != nil, privacy: .public)"
+        )
+        guard let tap else {
+            // Repli : l'application est active et la popup est fenêtre clé, mais rien dans
+            // SwiftUI ne connaît la table du §3. Un moniteur local d'événements rejoue le
+            // même acheminement que le tap, en consommant ce qu'il traite.
+            localMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) {
+                [weak self] event in
+                guard let self else { return event }
+                let characters = event.charactersIgnoringModifiers ?? event.characters ?? ""
+                let consumed = self.handle(
+                    keyCode: event.keyCode,
+                    characters: characters,
+                    modifiers: KeyModifiers(appKitFlags: event.modifierFlags)
+                )
+                return consumed ? nil : event
+            }
             mode = .keyWindow
             isActive = true
             return mode
@@ -71,6 +96,8 @@ public final class KeyEventRouter {
             }
             CFMachPortInvalidate(tap)
         }
+        if let localMonitor { NSEvent.removeMonitor(localMonitor) }
+        localMonitor = nil
         tap = nil
         runLoopSource = nil
         isActive = false
@@ -82,6 +109,9 @@ public final class KeyEventRouter {
 
     /// Traduit et distribue un événement clavier. Exposé pour les tests.
     func handle(keyCode: UInt16, characters: String, modifiers: KeyModifiers) -> Bool {
+        // Aucune journalisation de frappe ici, jamais : tracer les touches d'un utilisateur
+        // pendant qu'il cherche dans son historique irait contre tout ce que promet
+        // l'application.
         guard
             let command = mapper.command(
                 keyCode: keyCode,
@@ -148,6 +178,16 @@ public final class KeyEventRouter {
 }
 
 extension KeyModifiers {
+    /// Traduit les drapeaux AppKit en modificateurs de la popup.
+    init(appKitFlags: NSEvent.ModifierFlags) {
+        var modifiers: KeyModifiers = []
+        if appKitFlags.contains(.command) { modifiers.insert(.command) }
+        if appKitFlags.contains(.shift) { modifiers.insert(.shift) }
+        if appKitFlags.contains(.option) { modifiers.insert(.option) }
+        if appKitFlags.contains(.control) { modifiers.insert(.control) }
+        self = modifiers
+    }
+
     /// Traduit les drapeaux CoreGraphics en modificateurs de la popup.
     init(cgFlags: CGEventFlags) {
         var modifiers: KeyModifiers = []
