@@ -344,6 +344,7 @@ l'Accessibilité, pas de sandbox (décision §12.1), signature Developer ID, not
 | ADR-8 | Timer de 0,4 s sur `changeCount`, suspendu hors session active | 0,2 s ; observation d'événements | macOS ne notifie pas les changements de presse-papiers. 0,4 s est imperceptible à l'usage et divise par deux le coût d'un sondage à 0,2 s |
 | ADR-9 | Historique borné à 500 | Milliers d'éléments | Cohérent avec le design system, garantit ADR-3 et la fluidité de la liste |
 | ADR-10 | Clé illisible = réinitialisation silencieuse, jamais un blocage ni un arrêt | Dialogue système ; arrêt de l'application | Une invite du Trousseau bloque le démarrage d'un agent (constaté en test réel : blocage dans `SecItemCopyMatching`). L'historique protégé par une clé perdue est irrécupérable de toute façon |
+| ADR-11 | Trousseau **moderne** (*data protection keychain*), fichier `0600` en secours | Trousseau historique | Le trousseau historique attache une liste d'applications autorisées à chaque secret et rouvre un dialogue modal dès que la signature change — bloquant au lancement. Le trousseau moderne n'a pas d'ACL par application, mais réclame l'entitlement `keychain-access-groups` : les builds non signés se rabattent alors sur un fichier `0600` dans le dossier `0700`, protection assumée comme moindre et réservée au développement |
 
 ---
 

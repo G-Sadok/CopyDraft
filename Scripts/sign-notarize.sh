@@ -32,6 +32,7 @@ find "$APP/Contents" -name "*.dylib" -o -name "*.framework" | while read -r item
 	codesign --force --options runtime --timestamp --sign "$CODESIGN_IDENTITY" "$item"
 done
 codesign --force --options runtime --timestamp \
+	--entitlements "$ROOT/Scripts/CopyDraft.entitlements" \
 	--sign "$CODESIGN_IDENTITY" "$APP"
 
 echo "▸ Vérification de la signature…"
