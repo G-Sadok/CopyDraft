@@ -24,19 +24,21 @@ codée en dur · aucune mention d'assistant IA dans l'historique Git.
 **Ordre d'exécution** : E0 → E1 → E2 → E3 → E4 → E5 → E6 → E7 → E8 → E9. E10 n'est entrepris
 que si tout le reste est jugé parfait.
 
-| Epic | Titre | Stories | Priorité |
-|---|---|---|---|
-| E0 | Fondations du projet | 4 | P0 |
-| E1 | Capture du presse-papiers | 5 | P0 |
-| E2 | Historique et persistance chiffrée | 4 | P0 |
-| E3 | Popup flottante | 6 | P0 |
-| E4 | Collage et permission | 3 | P0 |
-| E5 | Barre de menus | 2 | P0/P1 |
-| E6 | Réglages | 5 | P0/P1 |
-| E7 | Onboarding | 1 | P0 |
-| E8 | Finition : états, mouvement, accessibilité, langues | 4 | P0 |
-| E9 | Performance, livraison, documentation | 4 | P0 |
-| E10 | Édition d'élément | 1 | P2 |
+| Epic | Titre | Stories | Priorité | État |
+|---|---|---|---|---|
+| E0 | Fondations du projet | 4 | P0 | ✅ terminé |
+| E1 | Capture du presse-papiers | 5 | P0 | ✅ terminé |
+| E2 | Historique et persistance chiffrée | 4 | P0 | ✅ terminé |
+| E3 | Popup flottante | 6 | P0 | ✅ terminé |
+| E4 | Collage et permission | 3 | P0 | 🔄 S-4.1 et S-4.2 faites, toasts en cours |
+| E5 | Barre de menus | 2 | P0/P1 | ✅ terminé |
+| E6 | Réglages | 5 | P0/P1 | 🔄 en cours |
+| E7 | Onboarding | 1 | P0 | 🔄 en cours |
+| E8 | Finition : états, mouvement, accessibilité, langues | 4 | P0 | 🔄 langues et états faits |
+| E9 | Performance, livraison, documentation | 4 | P0 | 🔄 icône et docs faites, mesures partielles |
+| E10 | Édition d'élément | 1 | P2 | ⏸ non entamé |
+
+*Dernière mise à jour : 2026-08-03. `dev` compile sans avertissement, 341 tests verts.*
 
 ---
 
