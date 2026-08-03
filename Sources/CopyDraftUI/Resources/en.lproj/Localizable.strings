@@ -1,0 +1,74 @@
+/* Menu bar menu */
+"menu.quit" = "Quit CopyDraft";
+
+/* Menu bar icon accessibility */
+"statusItem.accessibilityLabel" = "CopyDraft — clipboard history";
+
+/* Popup search field (§2.3) */
+"popup.search.placeholder" = "Search history";
+"search.clear" = "Clear search";
+
+/* ⌘n shortcut hint (§2.4) */
+"popup.shortcut.accessibilityLabel %lld" = "Command %lld";
+
+/* Information badges (§2.4) */
+"badge.paused" = "PAUSED";
+
+/* Capture paused banner (§5) */
+"popup.pause.banner" = "Capture paused — nothing is being saved.";
+"popup.pause.resume" = "Resume";
+
+/* Empty state — first run (§5) */
+"popup.empty.title" = "Nothing to paste yet";
+"popup.empty.message" = "Copy some text, a link or an image: items will appear here, newest first.";
+
+/* Empty state — no search results (§5) */
+"popup.empty.search.title" = "No results";
+"popup.empty.search.message" = "The search covers item contents and the source app.";
+
+/* Menu bar menu (§6) */
+"menubar.section.recent" = "Recent Items";
+"menubar.openPopup" = "Open CopyDraft";
+"menubar.pauseCapture" = "Pause Capture";
+"menubar.resumeCapture" = "Resume Capture";
+"menubar.clearAll" = "Clear All";
+"menubar.settings" = "Settings";
+"menubar.about" = "About CopyDraft";
+"menubar.item.noPreview" = "Item without preview";
+"menubar.accessibility.paused" = "CopyDraft — capture paused";
+
+/* Popup — sections and footer (§3, §5) */
+"popup.section.pinned" = "Pinned";
+"popup.section.recent" = "Recent";
+"popup.footer.items %lld" = "%lld items";
+"popup.footer.pinned %lld" = "%lld pinned";
+"popup.footer.filtered %lld %lld" = "%1$lld of %2$lld items";
+"popup.footer.paused" = "paused";
+"popup.restoring.title" = "Restoring history…";
+"popup.restoring.message" = "Your pinned items come back first.";
+
+/* Item context menu (§9) */
+"item.paste" = "Paste";
+"item.pastePlain" = "Paste as Plain Text";
+"item.pin" = "Pin";
+"item.unpin" = "Unpin";
+"item.copy" = "Copy";
+"item.delete" = "Delete";
+"item.neverRecord %@" = "Never Record %@…";
+
+/* Cell metadata vocabulary (§2.5) */
+"item.characters.one %@" = "%@ character";
+"item.characters.other %@" = "%@ characters";
+"item.pinned" = "pinned";
+"item.rank %1$@ %2$@" = "row %1$@ of %2$@";
+"subtype.plain" = "text";
+"subtype.code" = "code";
+"subtype.link" = "link";
+"subtype.path" = "path";
+"subtype.color" = "color";
+"subtype.rich" = "rich text";
+"subtype.image" = "image";
+
+/* Popup VoiceOver announcements (NFR-12) */
+"popup.accessibility.opened" = "Clipboard history opened";
+"popup.accessibility.closed" = "Clipboard history closed";

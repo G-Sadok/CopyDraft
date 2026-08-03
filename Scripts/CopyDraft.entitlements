@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<!-- Groupe d'accès du trousseau moderne : sans lui, une application signée Developer ID
+	     se voit refuser le data protection keychain et se rabat sur le fichier de secours. -->
+	<key>keychain-access-groups</key>
+	<array>
+		<string>$(AppIdentifierPrefix)com.copydraft.CopyDraft</string>
+	</array>
+</dict>
+</plist>

@@ -1,0 +1,74 @@
+/* Menu de la barre de menus */
+"menu.quit" = "Quitter CopyDraft";
+
+/* Accessibilité de l'icône de barre de menus */
+"statusItem.accessibilityLabel" = "CopyDraft — historique du presse-papiers";
+
+/* Champ de recherche de la popup (§2.3) */
+"popup.search.placeholder" = "Rechercher dans l'historique";
+"search.clear" = "Effacer la recherche";
+
+/* Indice de raccourci ⌘n (§2.4) */
+"popup.shortcut.accessibilityLabel %lld" = "Commande %lld";
+
+/* Badges d'information (§2.4) */
+"badge.paused" = "EN PAUSE";
+
+/* Bandeau de capture suspendue (§5) */
+"popup.pause.banner" = "Capture suspendue — rien n'est enregistré.";
+"popup.pause.resume" = "Reprendre";
+
+/* État vide — première utilisation (§5) */
+"popup.empty.title" = "Rien à coller pour l'instant";
+"popup.empty.message" = "Copiez du texte, un lien ou une image : les éléments apparaîtront ici, du plus récent au plus ancien.";
+
+/* État vide — recherche sans résultat (§5) */
+"popup.empty.search.title" = "Aucun résultat";
+"popup.empty.search.message" = "La recherche porte sur le contenu et sur l'application source.";
+
+/* Menu de la barre de menus (§6) */
+"menubar.section.recent" = "Derniers éléments";
+"menubar.openPopup" = "Ouvrir CopyDraft";
+"menubar.pauseCapture" = "Suspendre la capture";
+"menubar.resumeCapture" = "Reprendre la capture";
+"menubar.clearAll" = "Tout effacer";
+"menubar.settings" = "Réglages";
+"menubar.about" = "À propos de CopyDraft";
+"menubar.item.noPreview" = "Élément sans aperçu";
+"menubar.accessibility.paused" = "CopyDraft — capture suspendue";
+
+/* Popup — sections et pied (§3, §5) */
+"popup.section.pinned" = "Épinglés";
+"popup.section.recent" = "Récents";
+"popup.footer.items %lld" = "%lld éléments";
+"popup.footer.pinned %lld" = "%lld épinglé";
+"popup.footer.filtered %lld %lld" = "%1$lld sur %2$lld éléments";
+"popup.footer.paused" = "en pause";
+"popup.restoring.title" = "Restauration de l'historique…";
+"popup.restoring.message" = "Vos éléments épinglés reviennent en premier.";
+
+/* Menu contextuel d'un élément (§9) */
+"item.paste" = "Coller";
+"item.pastePlain" = "Coller sans mise en forme";
+"item.pin" = "Épingler";
+"item.unpin" = "Désépingler";
+"item.copy" = "Copier";
+"item.delete" = "Supprimer";
+"item.neverRecord %@" = "Ne jamais enregistrer %@…";
+
+/* Vocabulaire des métadonnées de cellule (§2.5) */
+"item.characters.one %@" = "%@ caractère";
+"item.characters.other %@" = "%@ caractères";
+"item.pinned" = "épinglé";
+"item.rank %1$@ %2$@" = "rang %1$@ sur %2$@";
+"subtype.plain" = "texte";
+"subtype.code" = "code";
+"subtype.link" = "lien";
+"subtype.path" = "chemin";
+"subtype.color" = "couleur";
+"subtype.rich" = "texte enrichi";
+"subtype.image" = "image";
+
+/* Annonces VoiceOver de la popup (NFR-12) */
+"popup.accessibility.opened" = "Historique du presse-papiers ouvert";
+"popup.accessibility.closed" = "Historique du presse-papiers fermé";

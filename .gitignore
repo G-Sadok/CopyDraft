@@ -1,0 +1,11 @@
+.DS_Store
+.build/
+.swiftpm/
+*.xcuserdatad
+DerivedData/
+dist/
+*.dmg
+!releases/*.dmg
+
+# Worktrees des agents
+.claude/worktrees/
