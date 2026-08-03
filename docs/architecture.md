@@ -73,8 +73,15 @@ flowchart TB
 
 ## 2. Structure du projet
 
-Paquet Swift unique, sans dépendance à Xcode pour compiler (Xcode reste utilisable et
-recommandé pour le débogage d'interface et Instruments).
+Paquet Swift unique (`swift-tools-version: 6.2`, mode langage Swift 6, concurrence stricte).
+
+> **Chaîne de compilation** — le SwiftPM livré avec les seuls Command Line Tools est
+> inutilisable sur cette machine : `PackageDescription.swiftinterface` et
+> `libPackageDescription.dylib` sont désynchronisés (`swiftLanguageVersions: [SwiftVersion]`
+> contre `[SwiftLanguageMode]`), et *aucun* manifeste ne se charge. Le build passe donc par la
+> toolchain d'Xcode, sélectionnée par la variable `DEVELOPER_DIR` — sans `sudo xcode-select`.
+> `Scripts/build-app.sh` la détecte automatiquement. Pour les commandes manuelles :
+> `export DEVELOPER_DIR=/Volumes/Apps/MACAPPS/Xcode.app/Contents/Developer`.
 
 ```
 CopyDraft/
@@ -98,8 +105,8 @@ CopyDraft/
 │   │   │                    PrivacyTab · AppearanceTab
 │   │   ├── Onboarding/      OnboardingWindowController · PermissionView · ReadyView
 │   │   └── Feedback/        ToastPresenter · ItemContextMenu · ClearAllAlert · ItemEditor
-│   ├── CopyDraft/           CopyDraftApp · AppDelegate · ServiceContainer
-│   └── Resources/           Localizable (fr, en) · Assets · Info.plist
+│   ├── CopyDraftUI/Resources/  Localizable.strings (fr, en) · Assets
+│   └── CopyDraft/           main · AppDelegate · ServiceContainer
 ├── Tests/
 │   ├── CopyDraftCoreTests/
 │   └── CopyDraftUITests/

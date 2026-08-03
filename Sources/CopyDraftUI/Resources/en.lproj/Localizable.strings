@@ -1,0 +1,5 @@
+/* Menu bar menu */
+"menu.quit" = "Quit CopyDraft";
+
+/* Menu bar icon accessibility */
+"statusItem.accessibilityLabel" = "CopyDraft — clipboard history";
