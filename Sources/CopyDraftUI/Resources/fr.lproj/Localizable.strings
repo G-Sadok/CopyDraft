@@ -1,0 +1,5 @@
+/* Menu de la barre de menus */
+"menu.quit" = "Quitter CopyDraft";
+
+/* Accessibilité de l'icône de barre de menus */
+"statusItem.accessibilityLabel" = "CopyDraft — historique du presse-papiers";
