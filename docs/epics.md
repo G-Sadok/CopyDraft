@@ -38,7 +38,12 @@ que si tout le reste est jugé parfait.
 | E9 | Performance, livraison, documentation | 4 | P0 | 🔄 icône et docs faites, mesures partielles |
 | E10 | Édition d'élément | 1 | P2 | ⏸ non entamé |
 
-*Dernière mise à jour : 2026-08-03. `dev` compile sans avertissement, 423 tests verts. Application vérifiée sur un lancement à froid : capture, classification et chiffrement fonctionnels, 0,0 % de CPU au repos.*
+*Dernière mise à jour : 2026-08-03. `dev` compile sans avertissement, 439 tests verts.*
+
+**Vérifié en conditions réelles** (application signée, autorisation d'accessibilité accordée) :
+lancement à froid, capture et classification, chiffrement effectif sur disque, ouverture par
+`⇧⌘V` sans vol de focus, collage réel dans TextEdit par `⌘n` et `↩︎`, fermeture par `Échap`,
+repli en copie seule sans autorisation, 0,0 % de CPU au repos.
 
 ---
 
