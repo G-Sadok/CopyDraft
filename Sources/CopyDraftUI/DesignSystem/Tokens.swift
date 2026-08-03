@@ -89,6 +89,12 @@ extension CD {
         // Contrôles (§1.5, §2.1)
         public static let iconBox: CGFloat = 16
         public static let hitTargetMin: CGFloat = 22
+        /// Épaisseur de l'anneau de focus, tracé **hors** du contrôle (§2.1).
+        public static let focusRingWidth: CGFloat = 3
+        /// Hauteur des contrôles discrets et des contrôles « small » d'AppKit (§2.2).
+        public static let controlHeightSmall: CGFloat = 24
+        /// Glyphe d'un état vide (§5).
+        public static let emptyStateGlyph: CGFloat = 36
         public static let buttonHeight: CGFloat = 28
         public static let buttonPaddingHorizontal: CGFloat = 14
 
@@ -107,5 +113,25 @@ extension CD {
         public static let onboardingWidth: CGFloat = 560
         public static let onboardingHeight: CGFloat = 420
         public static let toastBottomInset: CGFloat = 24
+    }
+}
+
+// MARK: - Opacités nommées (§2.1, §2.4, §5, §6)
+
+extension CD {
+    /// Voiles et opacités qui reviennent d'une surface à l'autre. Nommés ici pour qu'aucun
+    /// composant n'ait à choisir sa propre valeur.
+    public enum Opacity {
+        /// Anneau de focus : plus marqué en sombre, où le fond absorbe davantage.
+        public static let focusRingLight: Double = 0.35
+        public static let focusRingDark: Double = 0.45
+        /// Badge d'indice posé sur une cellule sélectionnée.
+        public static let badgeOnSelection: Double = 0.22
+        /// Teinte ambre du bandeau de pause.
+        public static let pauseBannerTint: Double = 0.14
+        /// Champ de recherche inactif, historique vide.
+        public static let fieldDisabled: Double = 0.55
+        /// Icône de barre de menus en pause (§6).
+        public static let statusIconPaused: Double = 0.40
     }
 }

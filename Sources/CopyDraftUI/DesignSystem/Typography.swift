@@ -24,6 +24,8 @@ extension CD {
         public static let code = SwiftUI.Font.system(size: 11.5, design: .monospaced)
         /// 12/16 regular — métadonnées de cellule.
         public static let caption = SwiftUI.Font.system(size: 12)
+        /// 11,5/16 regular — phrase d'un état vide, bandeau de pause.
+        public static let detail = SwiftUI.Font.system(size: 11.5)
         /// 11/14 regular — pied de popup.
         public static let small = SwiftUI.Font.system(size: 11)
         /// 11/11 medium, chiffres tabulaires — indices ⌘n.
@@ -44,6 +46,7 @@ extension CD {
         public static let body: CGFloat = 17
         public static let code: CGFloat = 16
         public static let caption: CGFloat = 16
+        public static let detail: CGFloat = 16
         public static let small: CGFloat = 14
         public static let shortcut: CGFloat = 11
         public static let micro: CGFloat = 13

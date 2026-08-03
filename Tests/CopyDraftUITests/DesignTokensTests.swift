@@ -98,6 +98,9 @@ struct DesignTokensTests {
             ("footer.height", CD.Metric.footerHeight),
             ("icon.box", CD.Metric.iconBox),
             ("hitTarget.min", CD.Metric.hitTargetMin),
+            ("focusRing.width", CD.Metric.focusRingWidth),
+            ("control.height.small", CD.Metric.controlHeightSmall),
+            ("emptyState.glyph", CD.Metric.emptyStateGlyph),
             ("button.height", CD.Metric.buttonHeight),
             ("button.paddingHorizontal", CD.Metric.buttonPaddingHorizontal),
             ("menu.width", CD.Metric.menuWidth),
@@ -224,6 +227,28 @@ struct DesignTokensTests {
         let dark = CD.Palette.bgPopoverSolid.resolved(for: .darkAqua)
         #expect(abs(dark.redComponent - 0x2C / 255.0) < 0.005)
         #expect(abs(dark.blueComponent - 0x2E / 255.0) < 0.005)
+    }
+
+    @Test(
+        "Les opacités nommées suivent le JSON",
+        arguments: [
+            ("focusRing.light", CD.Opacity.focusRingLight),
+            ("focusRing.dark", CD.Opacity.focusRingDark),
+            ("badge.onSelection", CD.Opacity.badgeOnSelection),
+            ("pauseBanner.tint", CD.Opacity.pauseBannerTint),
+            ("field.disabled", CD.Opacity.fieldDisabled),
+            ("statusIcon.paused", CD.Opacity.statusIconPaused)
+        ]
+    )
+    func opacity(key: String, value: Double) throws {
+        #expect(try #require(Self.number("opacity", key)) == value)
+    }
+
+    @Test("L'accent pressé est plus sombre que l'accent")
+    func accentPressedIsDarker() {
+        let accent = CD.Palette.accentPressed.resolved(for: .aqua)
+        #expect(abs(accent.redComponent - 0.0) < 0.02)
+        #expect(abs(accent.blueComponent - 0xDF / 255.0) < 0.02)
     }
 
     @Test("Le champ de recherche garde ses alphas du §1.1")
