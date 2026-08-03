@@ -1,3 +1,4 @@
+import CoreGraphics
 import Foundation
 
 /// Contenu brut lu dans le presse-papiers, avant classification et stockage (FR-2, FR-3).
