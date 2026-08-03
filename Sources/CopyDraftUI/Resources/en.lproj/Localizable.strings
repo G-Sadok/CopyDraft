@@ -68,3 +68,7 @@
 "subtype.color" = "color";
 "subtype.rich" = "rich text";
 "subtype.image" = "image";
+
+/* Popup VoiceOver announcements (NFR-12) */
+"popup.accessibility.opened" = "Clipboard history opened";
+"popup.accessibility.closed" = "Clipboard history closed";

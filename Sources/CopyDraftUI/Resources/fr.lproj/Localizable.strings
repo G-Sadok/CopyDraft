@@ -68,3 +68,7 @@
 "subtype.color" = "couleur";
 "subtype.rich" = "texte enrichi";
 "subtype.image" = "image";
+
+/* Annonces VoiceOver de la popup (NFR-12) */
+"popup.accessibility.opened" = "Historique du presse-papiers ouvert";
+"popup.accessibility.closed" = "Historique du presse-papiers fermé";

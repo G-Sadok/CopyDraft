@@ -116,6 +116,7 @@ public final class PopupController {
 
         animateIn()
         installDismissMonitors()
+        announce(L.t("popup.accessibility.opened"))
         isVisible = true
     }
 
@@ -160,6 +161,7 @@ public final class PopupController {
         keyRouter.stop()
 
         animateOut()
+        announce(L.t("popup.accessibility.closed"))
 
         onDismiss?(reason)
     }
@@ -217,6 +219,24 @@ public final class PopupController {
         if let resignObserver { NotificationCenter.default.removeObserver(resignObserver) }
         outsideClickMonitor = nil
         resignObserver = nil
+    }
+
+    // MARK: Accessibilité (NFR-12)
+
+    /// Annonce l'ouverture et la fermeture à VoiceOver.
+    ///
+    /// La popup ne prend pas le focus système : sans annonce explicite, un utilisateur de
+    /// VoiceOver ne saurait pas qu'elle vient de s'ouvrir. À la fermeture, le focus reste
+    /// où il était — dans l'application active — ce qui est précisément la promesse du §3.
+    private func announce(_ message: String) {
+        NSAccessibility.post(
+            element: panel,
+            notification: .announcementRequested,
+            userInfo: [
+                .announcement: message,
+                .priority: NSAccessibilityPriorityLevel.medium.rawValue
+            ]
+        )
     }
 
     // MARK: Écrans
