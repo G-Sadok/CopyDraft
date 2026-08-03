@@ -25,3 +25,14 @@
 /* Empty state — no search results (§5) */
 "popup.empty.search.title" = "No results";
 "popup.empty.search.message" = "The search covers item contents and the source app.";
+
+/* Menu bar menu (§6) */
+"menubar.section.recent" = "Recent Items";
+"menubar.openPopup" = "Open CopyDraft";
+"menubar.pauseCapture" = "Pause Capture";
+"menubar.resumeCapture" = "Resume Capture";
+"menubar.clearAll" = "Clear All";
+"menubar.settings" = "Settings";
+"menubar.about" = "About CopyDraft";
+"menubar.item.noPreview" = "Item without preview";
+"menubar.accessibility.paused" = "CopyDraft — capture paused";

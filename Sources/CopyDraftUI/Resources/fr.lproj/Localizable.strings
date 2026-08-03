@@ -25,3 +25,14 @@
 /* État vide — recherche sans résultat (§5) */
 "popup.empty.search.title" = "Aucun résultat";
 "popup.empty.search.message" = "La recherche porte sur le contenu et sur l'application source.";
+
+/* Menu de la barre de menus (§6) */
+"menubar.section.recent" = "Derniers éléments";
+"menubar.openPopup" = "Ouvrir CopyDraft";
+"menubar.pauseCapture" = "Suspendre la capture";
+"menubar.resumeCapture" = "Reprendre la capture";
+"menubar.clearAll" = "Tout effacer";
+"menubar.settings" = "Réglages";
+"menubar.about" = "À propos de CopyDraft";
+"menubar.item.noPreview" = "Élément sans aperçu";
+"menubar.accessibility.paused" = "CopyDraft — capture suspendue";
