@@ -117,7 +117,9 @@ public struct ContentClassifier: Sendable {
     private static func isPath(_ line: String) -> Bool {
         if line.lowercased().hasPrefix("file://") { return line.count > "file://".count }
         if line.hasPrefix("~/") { return line.count > 2 }
-        guard line.hasPrefix("/"), line.count > 1 else { return false }
+        // « // » ouvre un commentaire dans la moitié des langages et ne désigne aucun chemin
+        // utile sur macOS : sans cette exception, « // TODO: relire » passerait pour un chemin.
+        guard line.hasPrefix("/"), !line.hasPrefix("//"), line.count > 1 else { return false }
 
         // Un chemin peut contenir des espaces (« /Users/moi/Mes documents/note.txt »), mais
         // une phrase commençant par « / » aussi. On n'accepte les espaces qu'à partir de deux

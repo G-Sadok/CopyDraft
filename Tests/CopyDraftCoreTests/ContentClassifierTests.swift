@@ -94,7 +94,12 @@ struct ContentClassifierTests {
 
     @Test(
         "Une phrase qui commence par une barre oblique n'est pas un chemin",
-        arguments: ["/ ou alors on annule tout", "/", "Sources/CopyDraftCore/Model"]
+        arguments: [
+            "/ ou alors on annule tout",
+            "/",
+            "Sources/CopyDraftCore/Model",
+            "// TODO: revoir la classification",
+        ]
     )
     func notPaths(_ value: String) {
         #expect(classify(value) == .plain)
