@@ -13,6 +13,13 @@ public protocol SecretStore: Sendable {
 public enum SecretStoreError: Error, Equatable {
     /// Erreur brute renvoyée par le Trousseau.
     case keychain(OSStatus)
+    /// Le secret existe mais n'est pas lisible sans intervention de l'utilisateur.
+    ///
+    /// Se produit quand la signature de l'application a changé depuis la création du secret :
+    /// macOS demanderait alors l'autorisation par un dialogue modal. Pour un agent lancé à
+    /// l'ouverture de session, ce dialogue est inacceptable — on préfère repartir d'une clé
+    /// neuve, quitte à perdre un historique de toute façon illisible.
+    case inaccessible
 }
 
 /// Implémentation adossée au Trousseau du système.
@@ -40,13 +47,21 @@ public struct KeychainSecretStore: SecretStore {
         var query = baseQuery(for: account)
         query[kSecReturnData as String] = true
         query[kSecMatchLimit as String] = kSecMatchLimitOne
+        // Jamais de dialogue : le démarrage ne doit pas pouvoir se bloquer sur une invite
+        // système, fenêtre que l'utilisateur ne verrait même pas venir.
+        query[kSecUseAuthenticationUI as String] = kSecUseAuthenticationUISkip
 
         var result: CFTypeRef?
         let status = SecItemCopyMatching(query as CFDictionary, &result)
         switch status {
-        case errSecSuccess: return result as? Data
-        case errSecItemNotFound: return nil
-        default: throw SecretStoreError.keychain(status)
+        case errSecSuccess:
+            return result as? Data
+        case errSecItemNotFound:
+            return nil
+        case errSecInteractionNotAllowed, errSecAuthFailed, errSecUserCanceled:
+            throw SecretStoreError.inaccessible
+        default:
+            throw SecretStoreError.keychain(status)
         }
     }
 

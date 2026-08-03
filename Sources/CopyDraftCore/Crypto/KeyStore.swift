@@ -20,11 +20,19 @@ public struct KeyStore: Sendable {
     }
 
     /// Clé existante, ou clé fraîche créée et rangée à la volée.
+    ///
+    /// Une clé présente mais illisible — signature de l'application changée, Trousseau
+    /// verrouillé autrement — est remplacée plutôt que de bloquer le démarrage : l'historique
+    /// qu'elle protégeait est de toute façon indéchiffrable.
     public func loadOrCreate() throws -> SymmetricKey {
-        if let existing = try store.data(for: Self.account),
-            existing.count == Self.keyByteCount
-        {
-            return SymmetricKey(data: existing)
+        do {
+            if let existing = try store.data(for: Self.account),
+                existing.count == Self.keyByteCount
+            {
+                return SymmetricKey(data: existing)
+            }
+        } catch SecretStoreError.inaccessible {
+            try? store.remove(Self.account)
         }
 
         let key = SymmetricKey(size: .bits256)
@@ -35,7 +43,11 @@ public struct KeyStore: Sendable {
 
     /// Vrai si une clé exploitable est déjà en place.
     public func hasKey() throws -> Bool {
-        try store.data(for: Self.account)?.count == Self.keyByteCount
+        do {
+            return try store.data(for: Self.account)?.count == Self.keyByteCount
+        } catch SecretStoreError.inaccessible {
+            return false
+        }
     }
 
     /// Supprime la clé. L'historique déjà chiffré devient définitivement illisible :

@@ -1,6 +1,7 @@
 import AppKit
 import CopyDraftCore
 import CopyDraftUI
+import OSLog
 
 /// Assemblage de l'application : un seul endroit où les services se connaissent.
 ///
@@ -26,21 +27,23 @@ final class ServiceContainer {
     let onboarding: OnboardingWindowController
     let toasts = ToastPresenter()
 
+    /// Journal de démarrage. Une erreur ici prive l'application de tout ce qu'elle promet :
+    /// elle doit être lisible dans la Console, jamais avalée par un `try?`.
+    static let log = Logger(subsystem: AppInfo.bundleIdentifier, category: "startup")
+
     init?(preferences: Preferences = Preferences()) {
-        guard let paths = try? AppPaths.standard().createDirectories(),
-            let key = try? KeyStore().loadOrCreate(),
-            let queue = try? HistoryDatabase.open(at: paths.databaseURL)
-        else { return nil }
+        let stack: HistoryStack
+        do {
+            stack = try HistoryStack.make(preferences: preferences)
+        } catch {
+            Self.log.error("démarrage impossible — \(String(describing: error), privacy: .public)")
+            return nil
+        }
 
         self.preferences = preferences
-        self.paths = paths
-        cipher = Cipher(key: key)
-
-        store = HistoryStore(
-            repository: HistoryRepository(queue: queue, cipher: cipher),
-            imageStore: ImageStore(paths: paths, cipher: cipher),
-            preferences: preferences
-        )
+        paths = stack.paths
+        cipher = stack.cipher
+        store = stack.store
 
         monitor = ClipboardMonitor(preferences: preferences)
         capture = CaptureCoordinator(
