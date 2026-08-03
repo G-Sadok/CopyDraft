@@ -5,6 +5,7 @@
 DerivedData/
 dist/
 *.dmg
+!releases/*.dmg
 
 # Worktrees des agents
 .claude/worktrees/
