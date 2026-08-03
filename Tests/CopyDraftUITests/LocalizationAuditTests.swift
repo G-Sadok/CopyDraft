@@ -88,10 +88,13 @@ struct LocalizationAuditTests {
 
 /// Le réglage de langue doit gouverner **à la fois** les chaînes et les formateurs :
 /// une interface anglaise ne doit pas afficher « il y a 4 min ».
-@Suite("Réglage de langue")
+/// `.serialized` : ces tests écrivent le réglage de langue, qui est un état global de
+/// l'interface. Les laisser tourner en parallèle les ferait se marcher dessus.
+@Suite("Réglage de langue", .serialized)
 struct LanguageSelectionTests {
     @Test("Choisir une langue change les chaînes et la locale ensemble")
     func languageDrivesBoth() {
+        defer { L.setLanguage(.system) }
         L.setLanguage(.french)
         #expect(L.locale.language.languageCode?.identifier == "fr")
         let french = L.t("popup.section.pinned")
@@ -102,8 +105,6 @@ struct LanguageSelectionTests {
 
         #expect(french == "Épinglés")
         #expect(english == "Pinned")
-
-        L.setLanguage(.system)
     }
 
     @Test("« Système » rend la main aux réglages du Mac")
