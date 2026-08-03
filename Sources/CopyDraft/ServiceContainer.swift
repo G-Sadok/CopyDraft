@@ -110,9 +110,21 @@ final class ServiceContainer {
                     self.preferences.captureEnabled.toggle()
                 },
                 onOpenSettings: { [weak self] in self?.openSettings() },
-                onClearAll: { [weak self] in self?.clearAll() }
+                onClearAll: { [weak self] in self?.clearAll() },
+                onContentHeight: { [weak self] height in
+                    self?.popup.applyContentHeight(height)
+                }
             )
         )
+
+        // Habillage constant autour de la liste : champ de recherche, pied, marges et,
+        // le cas échéant, bandeau de pause.
+        popup.chromeHeight = { [weak self] in
+            guard let self else { return 0 }
+            return CD.Metric.searchHeight + CD.Metric.footerHeight
+                + 4 * CD.Space.x1_5
+                + (self.preferences.captureEnabled ? 0 : CD.Metric.searchHeight + CD.Space.x1_5)
+        }
 
         // Hauteur recalculée à chaque ouverture et à chaque frappe : la liste change, la
         // popup suit, sans jamais dépasser 60 % de l'écran (FR-20).

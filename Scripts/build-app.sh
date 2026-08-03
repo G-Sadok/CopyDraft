@@ -65,7 +65,18 @@ iconutil -c icns "$ICONSET" -o "$APP/Contents/Resources/AppIcon.icns"
 
 printf 'APPL????' > "$APP/Contents/PkgInfo"
 
-echo "▸ Signature ad hoc…"
-codesign --force --sign - --timestamp=none "$APP" >/dev/null
+# Identité stable si elle existe (voir make-dev-identity.sh), signature ad hoc sinon.
+# Une signature ad hoc change d'empreinte à chaque build : macOS révoque alors
+# l'autorisation d'accessibilité déjà accordée, et l'onboarding réapparaît.
+if security find-certificate -c "${DEV_IDENTITY_NAME:-CopyDraft Dev}" >/dev/null 2>&1; then
+	echo "▸ Signature avec « ${DEV_IDENTITY_NAME:-CopyDraft Dev} »…"
+	codesign --force --options runtime --timestamp=none \
+		--entitlements "$ROOT/Scripts/CopyDraft.entitlements" \
+		--sign "${DEV_IDENTITY_NAME:-CopyDraft Dev}" "$APP" >/dev/null
+else
+	echo "▸ Signature ad hoc (autorisation d'accessibilité perdue à chaque build —"
+	echo "  lancez ./Scripts/make-dev-identity.sh une fois pour y remédier)…"
+	codesign --force --sign - --timestamp=none "$APP" >/dev/null
+fi
 
 echo "✓ $APP"

@@ -68,9 +68,19 @@ Prérequis : macOS 14+, Xcode 16 ou ultérieur.
 
 ```sh
 export DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer   # si Xcode n'est pas actif
-swift test              # plus de 340 tests
-./Scripts/build-app.sh  # produit dist/CopyDraft.app (universel, signé ad hoc)
+swift test                      # plus de 430 tests
+./Scripts/make-dev-identity.sh  # une seule fois, voir ci-dessous
+./Scripts/build-app.sh          # produit dist/CopyDraft.app (universel)
 ```
+
+> **L'autorisation d'accessibilité disparaît à chaque recompilation ?** C'est attendu avec une
+> signature *ad hoc* : le bundle change d'empreinte, macOS y voit une autre application et
+> révoque l'autorisation — la case peut même rester cochée dans les Réglages système alors que
+> l'application n'est plus reconnue. `./Scripts/make-dev-identity.sh` crée une identité de
+> signature locale et stable ; après un dernier octroi, l'autorisation survit aux builds
+> suivants. Si l'onboarding réapparaît malgré tout, décochez puis recochez CopyDraft dans
+> *Réglages système → Confidentialité et sécurité → Accessibilité*, ou retirez-le de la liste
+> avec le bouton « − » avant de le rajouter.
 
 > Le SwiftPM livré avec les seuls *Command Line Tools* ne sait pas charger de manifeste sur
 > certaines installations (`PackageDescription` désynchronisé de sa bibliothèque) :
