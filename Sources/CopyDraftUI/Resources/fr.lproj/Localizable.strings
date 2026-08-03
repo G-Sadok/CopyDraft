@@ -3,3 +3,25 @@
 
 /* Accessibilité de l'icône de barre de menus */
 "statusItem.accessibilityLabel" = "CopyDraft — historique du presse-papiers";
+
+/* Champ de recherche de la popup (§2.3) */
+"popup.search.placeholder" = "Rechercher dans l'historique";
+"search.clear" = "Effacer la recherche";
+
+/* Indice de raccourci ⌘n (§2.4) */
+"popup.shortcut.accessibilityLabel %lld" = "Commande %lld";
+
+/* Badges d'information (§2.4) */
+"badge.paused" = "EN PAUSE";
+
+/* Bandeau de capture suspendue (§5) */
+"popup.pause.banner" = "Capture suspendue — rien n'est enregistré.";
+"popup.pause.resume" = "Reprendre";
+
+/* État vide — première utilisation (§5) */
+"popup.empty.title" = "Rien à coller pour l'instant";
+"popup.empty.message" = "Copiez du texte, un lien ou une image : les éléments apparaîtront ici, du plus récent au plus ancien.";
+
+/* État vide — recherche sans résultat (§5) */
+"popup.empty.search.title" = "Aucun résultat";
+"popup.empty.search.message" = "La recherche porte sur le contenu et sur l'application source.";
