@@ -22,6 +22,9 @@ final class ServiceContainer {
     let popup: PopupController
     let popupModel: PopupViewModel
     let statusItem: StatusItemController
+    let settings: SettingsWindowController
+    let onboarding: OnboardingWindowController
+    let toasts = ToastPresenter()
 
     init?(preferences: Preferences = Preferences()) {
         guard let paths = try? AppPaths.standard().createDirectories(),
@@ -51,6 +54,10 @@ final class ServiceContainer {
         popupModel = PopupViewModel(store: store, preferences: preferences)
         popup = PopupController(preferences: preferences)
         statusItem = StatusItemController(store: store, preferences: preferences)
+        settings = SettingsWindowController(
+            preferences: preferences, store: store, shortcuts: shortcuts
+        )
+        onboarding = OnboardingWindowController(permission: permission)
     }
 
     /// Branche les services entre eux, puis démarre capture, raccourcis et surveillance
@@ -62,11 +69,18 @@ final class ServiceContainer {
         wirePopup()
         wireStatusItem()
         wireShortcuts()
+        wireWindows()
 
         permission.start()
         capture.start()
 
         Task { await store.restore() }
+
+        // Premier lancement, ou autorisation révoquée depuis : l'onboarding est la seule
+        // fenêtre plein format de l'application (FR-47).
+        if !preferences.hasCompletedOnboarding || !permission.isGranted {
+            onboarding.show()
+        }
     }
 
     func stop() {
@@ -122,7 +136,8 @@ final class ServiceContainer {
             excludeApp: { [weak self] source in
                 guard let self, let bundleIdentifier = source.bundleIdentifier else { return }
                 self.preferences.excludedBundleIdentifiers.append(bundleIdentifier)
-            }
+            },
+            pinned: { [weak self] _ in self?.toasts.showPinned() }
         )
 
         popup.onCommand = { [weak self] command in
@@ -145,6 +160,8 @@ final class ServiceContainer {
             self.popupModel.prepareForDisplay()
             underStatusItem ? self.popup.showUnderStatusItem() : self.popup.show()
         }
+        statusItem.onOpenSettings = { [weak self] in self?.openSettings() }
+        statusItem.onClearAll = { [weak self] in self?.clearAll() }
         statusItem.onPaste = { [weak self] id in
             guard let self, let item = self.store.items.first(where: { $0.id == id }) else { return }
             self.pasteItem(item, plainTextOnly: false)
@@ -169,6 +186,27 @@ final class ServiceContainer {
         shortcuts.start()
     }
 
+    private func wireWindows() {
+        settings.onClearAll = { [weak self] in self?.clearAll() }
+        settings.onOpenAccessibilitySettings = {
+            AccessibilityPermissionMonitor.openSystemSettings()
+        }
+
+        onboarding.onFinished = { [weak self] in
+            self?.preferences.hasCompletedOnboarding = true
+        }
+        onboarding.onOpenSettings = { [weak self] in self?.openSettings() }
+
+        // Une autorisation révoquée ramène l'onboarding : sans elle, le collage se replie
+        // et l'utilisateur doit le savoir (FR-47, S-4.1).
+        permission.onChange = { [weak self] granted in
+            guard let self else { return }
+            if !granted, self.preferences.hasCompletedOnboarding {
+                self.onboarding.show()
+            }
+        }
+    }
+
     // MARK: Actions
 
     /// Colle un élément : le contenu complet est relu ici, jamais conservé en mémoire (ADR-4).
@@ -178,18 +216,29 @@ final class ServiceContainer {
 
         Task { [weak self] in
             guard let self, let content = await self.store.content(for: item.id) else { return }
-            _ = await self.paste.paste(content, into: target, plainTextOnly: plainTextOnly)
+            let outcome = await self.paste.paste(
+                content, into: target, plainTextOnly: plainTextOnly
+            )
+            // Le toast dit ce qui s'est réellement passé, collage ou simple copie (FR-35).
+            self.toasts.show(outcome)
         }
     }
 
-    /// Ouvre les réglages. Branché par l'epic E6.
-    private func openSettings() {}
+    private func openSettings() {
+        settings.show()
+    }
 
-    /// Vide l'historique après confirmation. Branché par l'epic E7 (§9).
+    /// Vide l'historique, après la confirmation du §9 avec son décompte explicite.
     private func clearAll() {
+        let result = ClearAllAlert.run(
+            itemCount: store.items.count,
+            pinnedCount: store.items.filter(\.pinned).count
+        )
+        guard result.confirmed else { return }
+
+        preferences.clearAllKeepsPinned = result.keepsPinned
         Task { [weak self] in
-            guard let self else { return }
-            await self.store.clearAll(keepingPinned: self.preferences.clearAllKeepsPinned)
+            await self?.store.clearAll(keepingPinned: result.keepsPinned)
         }
     }
 

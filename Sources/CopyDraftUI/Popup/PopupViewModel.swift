@@ -16,19 +16,23 @@ public final class PopupViewModel {
         public var dismiss: () -> Void
         public var rename: (ClipItem) -> Void
         public var excludeApp: (SourceApp) -> Void
+        /// Appelé après un épinglage, pour le toast « Élément épinglé » (§9).
+        public var pinned: (ClipItem) -> Void
 
         public init(
             paste: @escaping (ClipItem, Bool) -> Void = { _, _ in },
             copy: @escaping (ClipItem) -> Void = { _ in },
             dismiss: @escaping () -> Void = {},
             rename: @escaping (ClipItem) -> Void = { _ in },
-            excludeApp: @escaping (SourceApp) -> Void = { _ in }
+            excludeApp: @escaping (SourceApp) -> Void = { _ in },
+            pinned: @escaping (ClipItem) -> Void = { _ in }
         ) {
             self.paste = paste
             self.copy = copy
             self.dismiss = dismiss
             self.rename = rename
             self.excludeApp = excludeApp
+            self.pinned = pinned
         }
     }
 
@@ -178,7 +182,11 @@ public final class PopupViewModel {
 
     private func togglePin() {
         guard let selectedItem else { return }
-        Task { await store.togglePin(selectedItem.id) }
+        let wasPinned = selectedItem.pinned
+        Task { [actions] in
+            await store.togglePin(selectedItem.id)
+            if !wasPinned { actions.pinned(selectedItem) }
+        }
     }
 
     /// Supprime la sélection et laisse le curseur sur l'élément suivant, pour enchaîner.
