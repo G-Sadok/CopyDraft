@@ -190,45 +190,27 @@ public struct ItemMetadata: Sendable {
     ///   ici pour que la cellule se lise correctement en français **et** en anglais sans
     ///   dépendre du catalogue. Aucune autre langue n'est couverte : l'anglais sert de repli.
     enum Vocabulary {
-        enum Language {
-            case french, english
-
-            init(_ locale: Locale) {
-                self = locale.language.languageCode?.identifier == "fr" ? .french : .english
-            }
+        /// Résout une clé dans la langue demandée.
+        ///
+        /// Les vues ordinaires passent par `L.t` et suivent la langue du système ; ici, le
+        /// `Locale` est un paramètre — les tests doivent pouvoir vérifier le français et
+        /// l'anglais sans changer la langue de la machine.
+        static func string(_ key: String, locale: Locale) -> String {
+            let language = locale.language.languageCode?.identifier == "fr" ? "fr" : "en"
+            guard let path = Bundle.module.path(forResource: language, ofType: "lproj"),
+                let bundle = Bundle(path: path)
+            else { return key }
+            return bundle.localizedString(forKey: key, value: nil, table: nil)
         }
 
         static func characters(_ count: Int, locale: Locale) -> String {
             let value = ItemMetadata.number(count, locale: locale)
-            switch Language(locale) {
-            case .french: return "\(value) caractère\(count > 1 ? "s" : "")"
-            case .english: return "\(value) character\(count > 1 ? "s" : "")"
-            }
+            let key = count > 1 ? "item.characters.other %@" : "item.characters.one %@"
+            return String(format: string(key, locale: locale), value)
         }
 
         static func subtypeName(_ subtype: ClipSubtype, locale: Locale) -> String {
-            switch Language(locale) {
-            case .french:
-                switch subtype {
-                case .plain: return "texte"
-                case .code: return "code"
-                case .link: return "lien"
-                case .path: return "chemin"
-                case .color: return "couleur"
-                case .rich: return "texte enrichi"
-                case .image: return "image"
-                }
-            case .english:
-                switch subtype {
-                case .plain: return "text"
-                case .code: return "code"
-                case .link: return "link"
-                case .path: return "path"
-                case .color: return "color"
-                case .rich: return "rich text"
-                case .image: return "image"
-                }
-            }
+            string("subtype.\(subtype.rawValue)", locale: locale)
         }
 
         /// Nom de type capitalisé, employé comme aperçu de repli d'une image sans nom.
@@ -238,27 +220,20 @@ public struct ItemMetadata: Sendable {
         }
 
         static func pinned(locale: Locale) -> String {
-            switch Language(locale) {
-            case .french: return "épinglé"
-            case .english: return "pinned"
-            }
+            string("item.pinned", locale: locale)
         }
 
         /// Libellé du bouton d'épingle, qui bascule avec l'état.
         static func pinAction(isPinned: Bool, locale: Locale) -> String {
-            switch Language(locale) {
-            case .french: return isPinned ? "Détacher" : "Épingler"
-            case .english: return isPinned ? "Unpin" : "Pin"
-            }
+            string(isPinned ? "item.unpin" : "item.pin", locale: locale)
         }
 
         static func rank(index: Int, total: Int, locale: Locale) -> String {
-            let position = ItemMetadata.number(index, locale: locale)
-            let count = ItemMetadata.number(total, locale: locale)
-            switch Language(locale) {
-            case .french: return "rang \(position) sur \(count)"
-            case .english: return "row \(position) of \(count)"
-            }
+            String(
+                format: string("item.rank %1$@ %2$@", locale: locale),
+                ItemMetadata.number(index, locale: locale),
+                ItemMetadata.number(total, locale: locale)
+            )
         }
     }
 }
