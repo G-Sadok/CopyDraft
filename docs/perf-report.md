@@ -24,6 +24,9 @@ Cibles du PRD §5 et du brief. Chaque mesure indique comment la reproduire.
 | Mémoire résidente | < 80 Mo (NFR-2) | **41 Mo** (historique quasi vide) | ✅ partiel |
 | Filtrage de la recherche | < 16 ms sur 500 éléments (FR-36) | à mesurer | ⏳ |
 | Ouverture de la popup | < 150 ms perçus (NFR-3) | à mesurer | ⏳ |
+| Popup sans vol de focus | panneau non clé, app inactive (FR-19) | **vérifié** : journal `mode eventTap, clé false, active false` | ✅ |
+| Collage réel dans l'app active | contenu inséré (FR-33) | **vérifié** : `⌘2` et `↩︎` insèrent dans TextEdit, focus conservé | ✅ |
+| Repli sans autorisation | copie seule (FR-34) | **vérifié** : presse-papiers rempli, aucune frappe synthétisée | ✅ |
 | Connexions réseau | aucune (NFR-5) | aucune API réseau liée ; à confirmer par `nettop` | ⏳ |
 | Chiffrement effectif sur disque | contenu illisible (NFR-6) | **vérifié** : aucun contenu copié retrouvé dans `history.sqlite` ni son WAL | ✅ |
 
