@@ -8,9 +8,15 @@ let package = Package(
     products: [
         .executable(name: "CopyDraft", targets: ["CopyDraft"])
     ],
-    dependencies: [],
+    dependencies: [
+        // Persistance SQLite : requêtes typées, migrations explicites, observation (ADR-1).
+        .package(url: "https://github.com/groue/GRDB.swift", from: "7.0.0")
+    ],
     targets: [
-        .target(name: "CopyDraftCore"),
+        .target(
+            name: "CopyDraftCore",
+            dependencies: [.product(name: "GRDB", package: "GRDB.swift")]
+        ),
         .target(
             name: "CopyDraftUI",
             dependencies: ["CopyDraftCore"],
