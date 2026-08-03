@@ -70,8 +70,11 @@ printf 'APPL????' > "$APP/Contents/PkgInfo"
 # l'autorisation d'accessibilité déjà accordée, et l'onboarding réapparaît.
 if security find-certificate -c "${DEV_IDENTITY_NAME:-CopyDraft Dev}" >/dev/null 2>&1; then
 	echo "▸ Signature avec « ${DEV_IDENTITY_NAME:-CopyDraft Dev} »…"
-	codesign --force --options runtime --timestamp=none \
-		--entitlements "$ROOT/Scripts/CopyDraft.entitlements" \
+	# Ni entitlements ni hardened runtime ici : l'entitlement de groupe de trousseau contient
+	# le jeton $(AppIdentifierPrefix), que seul Xcode substitue, et launchd refuse de lancer
+	# une application dont les entitlements ne sont pas résolus. Ces deux options sont le
+	# propre du build de distribution (sign-notarize.sh).
+	codesign --force --timestamp=none \
 		--sign "${DEV_IDENTITY_NAME:-CopyDraft Dev}" "$APP" >/dev/null
 else
 	echo "▸ Signature ad hoc (autorisation d'accessibilité perdue à chaque build —"

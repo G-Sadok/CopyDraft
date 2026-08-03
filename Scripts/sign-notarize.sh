@@ -22,9 +22,22 @@ STAGING="$ROOT/dist/dmg-staging"
 
 : "${CODESIGN_IDENTITY:?Définissez CODESIGN_IDENTITY (Developer ID Application)}"
 : "${NOTARY_PROFILE:?Définissez NOTARY_PROFILE (profil notarytool)}"
+: "${TEAM_ID:?Definissez TEAM_ID, identifiant Apple Developer Team, prefixe du groupe de trousseau}"
 
 echo "▸ Build release universel…"
 "$ROOT/Scripts/build-app.sh" release
+
+echo "▸ Entitlements résolus pour l'équipe $TEAM_ID…"
+# $(AppIdentifierPrefix) n'est substitué que par Xcode : on le résout ici, sans quoi launchd
+# refuse de lancer l'application signée.
+ENTITLEMENTS="$ROOT/dist/CopyDraft.resolved.entitlements"
+python3 - "$ROOT/Scripts/CopyDraft.entitlements" "$ENTITLEMENTS" "$TEAM_ID" <<'SUBST'
+import sys
+source, destination, team = sys.argv[1], sys.argv[2], sys.argv[3]
+open(destination, "w").write(
+    open(source).read().replace("$(AppIdentifierPrefix)", team + ".")
+)
+SUBST
 
 echo "▸ Signature Developer ID…"
 # Les bibliothèques et bundles embarqués se signent avant l'exécutable qui les contient.
@@ -32,7 +45,7 @@ find "$APP/Contents" -name "*.dylib" -o -name "*.framework" | while read -r item
 	codesign --force --options runtime --timestamp --sign "$CODESIGN_IDENTITY" "$item"
 done
 codesign --force --options runtime --timestamp \
-	--entitlements "$ROOT/Scripts/CopyDraft.entitlements" \
+	--entitlements "$ENTITLEMENTS" \
 	--sign "$CODESIGN_IDENTITY" "$APP"
 
 echo "▸ Vérification de la signature…"
