@@ -1,0 +1,32 @@
+/* Paste feedback toasts (§9, FR-34, FR-35) */
+"toast.pasted" = "Pasted into %@";
+"toast.pastedPlainText" = "Pasted as plain text";
+"toast.pinned" = "Item pinned";
+"toast.copiedOnly" = "Copied — paste with ⌘V";
+
+/* “Clear all” confirmation (§9, FR-12) — the count is spelled out */
+"clearAll.title" = "Clear all history?";
+"clearAll.message.one" = "%lld item will be permanently deleted. This action cannot be undone.";
+"clearAll.message.other" = "%lld items will be permanently deleted. This action cannot be undone.";
+"clearAll.keepPinned.one" = "Keep the %lld pinned item";
+"clearAll.keepPinned.other" = "Keep the %lld pinned items";
+"clearAll.confirm" = "Clear All";
+"clearAll.cancel" = "Cancel";
+
+/* Item context menu (§9, FR-38) */
+"itemMenu.paste" = "Paste";
+"itemMenu.pastePlainText" = "Paste Without Formatting";
+"itemMenu.pin" = "Pin";
+"itemMenu.unpin" = "Unpin";
+"itemMenu.rename" = "Rename…";
+"itemMenu.copy" = "Copy";
+"itemMenu.delete" = "Delete";
+"itemMenu.excludeApp" = "Never Save %@…";
+
+/* About (§9) */
+"about.title" = "About CopyDraft";
+"about.version" = "Version %@ (%@)";
+"about.tagline" = "Clipboard history for macOS. 100 % local processing, no data transmitted.";
+"about.website" = "Website";
+"about.licenses" = "Licenses";
+"about.copyright" = "© %@ — All rights reserved";

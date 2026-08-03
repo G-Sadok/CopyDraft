@@ -1,0 +1,28 @@
+/* Onboarding window (§8) — title hidden, read back by VoiceOver */
+"window.title" = "Welcome to CopyDraft";
+
+/* “Permission not granted” state (§8) */
+"denied.title" = "One permission to grant";
+"denied.body" = "To paste into the active app, CopyDraft needs access to the macOS accessibility features. It is the only permission requested, and nothing leaves your Mac.";
+"denied.step.1" = "Open System Settings → Privacy & Security → Accessibility";
+"denied.step.2" = "Turn on the switch next to CopyDraft";
+"denied.step.3" = "Come back here — this window updates on its own";
+"denied.status" = "Permission not granted";
+"denied.primary" = "Open System Settings";
+"denied.secondary" = "Later";
+"denied.footnote" = "Without this permission, CopyDraft copies the item to the clipboard; pasting is up to you with ⌘V.";
+
+/* “Permission granted” state (§8) */
+"granted.title" = "CopyDraft is ready";
+"granted.body" = "Your history fills up from your next copy onwards. Call it up from anywhere with:";
+"granted.point.1" = "Automatic paste into the active app";
+"granted.point.2" = "Icon added to the menu bar";
+"granted.point.3" = "Passwords and confidential content ignored";
+"granted.primary" = "Get started";
+"granted.secondary" = "Open settings";
+
+/* Accessibility */
+"step.accessibilityLabel" = "Step %lld";
+"shortcut.accessibilityLabel" = "Open shortcut: %@";
+"appMark.accessibilityLabel" = "CopyDraft icon";
+"appMark.granted.accessibilityLabel" = "CopyDraft icon, permission granted";
