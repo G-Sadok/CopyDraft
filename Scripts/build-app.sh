@@ -56,6 +56,13 @@ for bundle in "$BIN_PATH"/*.bundle; do
 	cp -R "$bundle" "$APP/Contents/Resources/"
 done
 
+# Icône d'application, générée d'après le design system §9 plutôt que versionnée en binaire.
+echo "▸ Icône…"
+ICONSET="$ROOT/dist/AppIcon.iconset"
+rm -rf "$ICONSET"
+swift "$ROOT/Scripts/make-icon.swift" "$ICONSET" >/dev/null
+iconutil -c icns "$ICONSET" -o "$APP/Contents/Resources/AppIcon.icns"
+
 printf 'APPL????' > "$APP/Contents/PkgInfo"
 
 echo "▸ Signature ad hoc…"
