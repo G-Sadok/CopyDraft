@@ -21,13 +21,83 @@ télémétrie. L'historique est chiffré sur le disque.
 
 ## Installation
 
-1. Téléchargez le `.dmg`, glissez **CopyDraft** dans *Applications*.
-2. Au premier lancement, CopyDraft demande l'accès aux fonctions d'accessibilité : c'est la
-   **seule** permission requise, et elle sert uniquement à coller à votre place.
-3. L'icône apparaît dans la barre de menus. C'est tout.
+1. Téléchargez **[`releases/CopyDraft-0.1.0.dmg`](releases/CopyDraft-0.1.0.dmg)**, ouvrez-le,
+   glissez **CopyDraft** dans *Applications*.
+2. **Premier lancement : clic droit sur CopyDraft → « Ouvrir » → « Ouvrir ».** Un double-clic
+   afficherait « impossible de vérifier le développeur » : ce paquet est signé localement mais
+   pas notarisé par Apple, faute de compte développeur payant. Cette manipulation n'est
+   nécessaire qu'une fois.
+3. CopyDraft demande l'accès aux **fonctions d'accessibilité**. Cliquez « Ouvrir Réglages
+   Système », activez l'interrupteur en face de CopyDraft. C'est la **seule** permission
+   demandée, et elle sert uniquement à coller à votre place.
+4. L'icône apparaît dans la barre de menus. C'est tout.
 
 Sans cette autorisation, CopyDraft reste utilisable : l'élément choisi est mis dans le
 presse-papiers et vous collez vous-même avec `⌘V`.
+
+> **L'icône n'apparaît pas ?** Si vous utilisez un gestionnaire de barre de menus (Hidden Bar,
+> Bartender, Ice…), il range les nouveaux éléments dans sa zone masquée. Maintenez **⌘** et
+> faites glisser l'icône CopyDraft à droite du séparateur pour la rendre permanente.
+
+## Guide d'utilisation
+
+### Le geste, en trois secondes
+
+1. Copiez comme d'habitude, dans n'importe quelle application (`⌘C`).
+2. Là où vous voulez coller, appuyez sur **`⇧⌘V`**. La liste apparaît **au curseur**, et
+   l'application où vous travaillez garde le focus.
+3. Choisissez : `↩︎` pour le premier élément, `↑↓` puis `↩︎` pour un autre, ou `⌘1` à `⌘9`
+   pour coller directement le n-ième. La liste se referme, le texte est là.
+
+### Retrouver quelque chose
+
+Ouvrez la popup et **tapez** : pas besoin de cliquer dans le champ de recherche, la frappe y va
+d'elle-même. La recherche porte sur le contenu **et** sur l'application d'origine — « safari »
+retrouve ce que vous aviez copié depuis Safari. `Échap` efface la recherche, un second `Échap`
+ferme la fenêtre.
+
+### Garder un élément sous la main
+
+`⌘P` épingle l'élément sélectionné : il rejoint la section **Épinglés**, en tête de liste, et
+n'est jamais supprimé automatiquement — même quand l'historique déborde, même au redémarrage.
+Un second `⌘P` le détache. À la souris, l'épingle apparaît au survol : cliquez-la, elle épingle
+sans coller.
+
+### Coller sans la mise en forme
+
+`⇧↩︎` au lieu de `↩︎` : seul le texte brut part, sans police ni couleur d'origine. Un second
+raccourci global, `⌥⇧⌘V`, ouvre directement la popup dans ce mode.
+
+### Faire le ménage
+
+- `⌫` supprime l'élément sélectionné (quand la recherche est vide).
+- Le bouton corbeille du pied de la popup vide tout l'historique, avec une confirmation qui
+  compte les éléments et propose de conserver les épinglés.
+- Clic droit sur un élément : coller, coller sans mise en forme, épingler, copier, supprimer,
+  et **« Ne jamais enregistrer *cette application* »**.
+
+### Suspendre la capture
+
+Le bouton pause du pied de la popup — ou l'entrée « Suspendre la capture » du menu de la barre
+de menus — arrête l'enregistrement le temps d'une manipulation sensible. Un bandeau ambre le
+rappelle, l'icône de la barre de menus s'atténue, et l'historique déjà là reste consultable.
+
+### Régler à votre main
+
+Menu de la barre de menus → **Réglages…** (`⌘,`) :
+
+| Onglet | Ce qu'on y règle |
+|---|---|
+| Général | Lancement à la connexion, taille de l'historique (10 à 500), conservation au redémarrage, langue |
+| Raccourci | Le raccourci d'ouverture et celui du collage sans mise en forme, activation de `⌘1`–`⌘9` |
+| Popup | Position (au curseur, centrée, sous l'icône), nombre d'éléments visibles, fond translucide |
+| Confidentialité | Pause, applications exclues, tout effacer |
+| Apparence | Thème clair / sombre / système, couleur d'accent |
+
+### Le menu de la barre de menus
+
+Clic sur l'icône : les cinq derniers éléments (collables d'un clic), la pause, « Tout effacer »,
+les réglages, « À propos », « Quitter ». **`⌥`-clic** ouvre directement la popup sous l'icône.
 
 ## Raccourcis
 
@@ -104,6 +174,12 @@ NOTARY_PROFILE="copydraft" \
 | `design-system/` | Design system de référence et `tokens.json`, source de vérité visuelle |
 | `docs/` | Brief produit, PRD, architecture, UX, epics et stories |
 | `Scripts/` | Build du bundle, icône, signature et notarisation |
+
+## Feuille de route
+
+Hors périmètre de cette première version, envisagé ensuite : synchronisation iCloud entre
+plusieurs Mac, prise en charge des fichiers et dossiers copiés, édition et renommage des
+éléments, mise à jour automatique.
 
 ## Licence
 
