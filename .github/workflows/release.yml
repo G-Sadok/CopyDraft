@@ -37,7 +37,23 @@ jobs:
           swift --version
 
       - name: Tests
-        run: swift test
+        id: tests
+        # La sortie est conservée pour être republiée en annotations : les journaux complets
+        # d'une exécution ne sont lisibles qu'authentifié, alors qu'une annotation est
+        # publique. Sans cela, un échec de compilation en CI reste indéchiffrable.
+        run: |
+          set -o pipefail
+          swift test 2>&1 | tee /tmp/tests.log
+
+      - name: Détail de l'échec
+        if: failure()
+        run: |
+          echo "::group::Sortie des tests"
+          tail -n 120 /tmp/tests.log || true
+          echo "::endgroup::"
+          grep -E "error:|✘" /tmp/tests.log | head -n 20 | while IFS= read -r line; do
+            printf '::error::%s\n' "$line"
+          done
 
       - name: Construire le paquet
         id: package
