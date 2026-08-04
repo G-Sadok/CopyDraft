@@ -24,6 +24,10 @@ public final class StatusItemController {
     /// Ouvre la confirmation « Tout effacer » du §9 — jamais l'effacement direct (FR-12).
     public var onClearAll: (() -> Void)?
     public var onAbout: (() -> Void)?
+    /// Rouvre l'écran d'autorisation depuis le menu.
+    public var onRequestAccessibility: (() -> Void)?
+    /// État de l'autorisation d'accessibilité, relu à chaque ouverture du menu.
+    public var isAccessibilityGranted: () -> Bool = { true }
 
     /// Cadre de l'icône en coordonnées écran, pour la position « sous la barre de menus ».
     ///
@@ -112,7 +116,11 @@ public final class StatusItemController {
         menu.autoenablesItems = false
         menu.minimumWidth = CD.Metric.menuWidth
 
-        for item in builder.items(from: store.items, isPaused: isPaused) {
+        for item in builder.items(
+            from: store.items,
+            isPaused: isPaused,
+            needsAccessibility: !isAccessibilityGranted()
+        ) {
             menu.addItem(makeMenuItem(item))
         }
 
@@ -167,6 +175,8 @@ public final class StatusItemController {
             onOpenSettings?()
         case .about:
             onAbout?()
+        case .grantAccessibility:
+            onRequestAccessibility?()
         case .quit:
             NSApp.terminate(nil)
         case .separator, .sectionHeader:

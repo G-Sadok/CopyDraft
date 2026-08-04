@@ -173,6 +173,8 @@ final class ServiceContainer {
             self.popupModel.prepareForDisplay()
             underStatusItem ? self.popup.showUnderStatusItem() : self.popup.show()
         }
+        statusItem.isAccessibilityGranted = { [weak self] in self?.permission.isGranted ?? true }
+        statusItem.onRequestAccessibility = { [weak self] in self?.onboarding.show() }
         statusItem.onOpenSettings = { [weak self] in self?.openSettings() }
         statusItem.onAbout = { [weak self] in self?.about.show() }
         statusItem.onClearAll = { [weak self] in self?.clearAll() }
