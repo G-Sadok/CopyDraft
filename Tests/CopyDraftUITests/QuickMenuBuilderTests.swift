@@ -235,3 +235,47 @@ struct QuickMenuBuilderTests {
         #expect(items.last?.action == .quit)
     }
 }
+
+@MainActor
+@Suite("Entrée d'autorisation du menu")
+struct QuickMenuAccessibilityTests {
+    private let builder = QuickMenuBuilder()
+
+    private func makeItem(_ text: String) -> ClipItem {
+        ClipItem(
+            kind: .text,
+            subtype: .plain,
+            createdAt: Date(timeIntervalSince1970: 0),
+            source: SourceApp(bundleIdentifier: "com.test", name: "Test"),
+            byteCount: text.utf8.count,
+            characterCount: text.count,
+            searchText: text,
+            previewLines: [text]
+        )
+    }
+
+    /// Sans cette entrée, un utilisateur ayant répondu « Plus tard » n'a plus aucun moyen de
+    /// revenir sur sa décision : l'écran d'autorisation ne s'ouvre plus de lui-même.
+    @Test("L'entrée d'autorisation apparaît en tête quand l'accessibilité manque")
+    func showsGrantEntryFirst() {
+        let items = builder.items(
+            from: [makeItem("a")], isPaused: false, needsAccessibility: true
+        )
+        #expect(items.first?.action == .grantAccessibility)
+    }
+
+    @Test("Elle disparaît dès que l'autorisation est accordée")
+    func hidesGrantEntryWhenGranted() {
+        let items = builder.items(
+            from: [makeItem("a")], isPaused: false, needsAccessibility: false
+        )
+        #expect(!items.contains { $0.action == .grantAccessibility })
+    }
+
+    @Test("Elle est présente même sur un historique vide")
+    func showsGrantEntryWithEmptyHistory() {
+        let items = builder.items(from: [], isPaused: false, needsAccessibility: true)
+        #expect(items.first?.action == .grantAccessibility)
+        #expect(items.contains { $0.action == .quit })
+    }
+}
