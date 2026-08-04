@@ -72,3 +72,4 @@
 /* Popup VoiceOver announcements (NFR-12) */
 "popup.accessibility.opened" = "Clipboard history opened";
 "popup.accessibility.closed" = "Clipboard history closed";
+"menubar.grantAccessibility" = "Grant Accessibility Access…";

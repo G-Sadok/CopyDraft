@@ -20,6 +20,8 @@ public struct QuickMenuItem: Sendable, Equatable {
         case separator
         /// Titre de section « Derniers éléments » du §6 : ni cliquable, ni sélectionnable.
         case sectionHeader
+        /// Rouvre l'écran d'autorisation. Présent uniquement quand l'accessibilité manque.
+        case grantAccessibility
     }
 
     public let title: String
@@ -64,9 +66,24 @@ public struct QuickMenuBuilder: Sendable {
     public func items(
         from history: [ClipItem],
         isPaused: Bool,
+        needsAccessibility: Bool = false,
         maxItems: Int = Limits.menuItems
     ) -> [QuickMenuItem] {
         var items: [QuickMenuItem] = []
+
+        // Sans autorisation, le collage se replie sur une simple copie. L'entrée est en tête
+        // parce qu'elle est le seul chemin permanent vers l'écran d'autorisation : celui-ci
+        // ne s'ouvre plus de lui-même à chaque lancement, et l'utilisateur qui a répondu
+        // « Plus tard » doit pouvoir revenir sur sa décision.
+        if needsAccessibility {
+            items.append(
+                QuickMenuItem(
+                    title: L.t("menubar.grantAccessibility"),
+                    action: .grantAccessibility
+                )
+            )
+            items.append(QuickMenuItem(title: "", action: .separator))
+        }
 
         let recent = history.prefix(max(0, maxItems))
         if !recent.isEmpty {
