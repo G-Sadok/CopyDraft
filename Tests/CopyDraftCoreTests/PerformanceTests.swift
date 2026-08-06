@@ -7,10 +7,20 @@ import Testing
 /// Garde-fous de performance (NFR-1 à NFR-3, FR-36).
 ///
 /// Ces tests ne remplacent pas les mesures de `docs/perf-report.md` — ils empêchent une
-/// régression franche de passer inaperçue. Les seuils sont volontairement larges par rapport
-/// aux cibles : une machine chargée ne doit pas rendre la suite instable.
+/// régression franche de passer inaperçue.
+///
+/// **Les assertions de durée ne s'exécutent pas en intégration continue.** Un runner partagé
+/// est lent et irrégulier : un build a déjà échoué sur du code strictement identique à celui
+/// qui passait juste avant. Une CI qui échoue au hasard est une CI qu'on cesse de croire, et
+/// qui finit par bloquer des publications sans raison. Les assertions de *comportement*, elles,
+/// tournent partout.
 @Suite("Performance")
 struct PerformanceTests {
+    /// Vrai sur un runner d'intégration continue (`CI` est posée par GitHub Actions).
+    static var isContinuousIntegration: Bool {
+        ProcessInfo.processInfo.environment["CI"] != nil
+    }
+
     private func makeItems(_ count: Int) -> [ClipItem] {
         (0..<count).map { index in
             let text =
@@ -33,7 +43,10 @@ struct PerformanceTests {
 
     /// « Filtrage à chaque frappe, sans debounce perceptible (< 16 ms sur 500 éléments) »,
     /// design system §2.3.
-    @Test("Le filtrage de 500 éléments tient sous une image d'écran")
+    @Test(
+        "Le filtrage de 500 éléments tient sous une image d'écran",
+        .enabled(if: !PerformanceTests.isContinuousIntegration)
+    )
     @MainActor
     func filteringIsInstant() {
         let items = makeItems(500)
@@ -55,7 +68,10 @@ struct PerformanceTests {
         )
     }
 
-    @Test("La déduplication reste rapide sur un historique plein")
+    @Test(
+        "La déduplication reste rapide sur un historique plein",
+        .enabled(if: !PerformanceTests.isContinuousIntegration)
+    )
     func deduplicationScales() {
         let policy = DeduplicationPolicy()
         var history: [DeduplicationCandidate] = []
@@ -84,7 +100,10 @@ struct PerformanceTests {
     }
 
     /// Le chiffrement est sur le chemin de chaque capture : il ne doit pas se voir.
-    @Test("Chiffrer un contenu de taille courante coûte moins d'une milliseconde")
+    @Test(
+        "Chiffrer un contenu de taille courante coûte moins d'une milliseconde",
+        .enabled(if: !PerformanceTests.isContinuousIntegration)
+    )
     func encryptionIsCheap() throws {
         let cipher = Cipher(key: SymmetricKey(size: .bits256))
         let payload = Data(String(repeating: "contenu copié ", count: 200).utf8)
@@ -121,7 +140,10 @@ struct PerformanceTests {
             for _ in 0..<10_000 { monitor.poll() }
         }
 
+        // Le comportement se vérifie partout : c'est lui qui porte NFR-1.
         #expect(pasteboard.contentAccessCount == 0, "aucune lecture de contenu à l'état stable")
-        #expect(elapsed < .milliseconds(200), "10 000 ticks en \(elapsed)")
+        if !Self.isContinuousIntegration {
+            #expect(elapsed < .milliseconds(200), "10 000 ticks en \(elapsed)")
+        }
     }
 }
