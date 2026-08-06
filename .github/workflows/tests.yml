@@ -1,0 +1,43 @@
+name: Tests
+
+# Valide chaque poussée sur les branches d'intégration, sans rien publier.
+#
+# Sans ce workflow, la seule validation automatique était celle du job de publication : pour
+# vérifier une modification il fallait créer un tag, donc une version. Une erreur de
+# compilation ne se découvrait qu'au moment de livrer.
+
+on:
+  push:
+    branches: [main, dev]
+  pull_request:
+    branches: [main, dev]
+
+jobs:
+  test:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Sélectionner Xcode
+        run: |
+          XCODE="$(ls -d /Applications/Xcode*.app | sort -V | tail -1)"
+          echo "Xcode retenu : $XCODE"
+          sudo xcode-select -s "$XCODE"
+          swift --version
+
+      - name: Tests
+        run: |
+          set -o pipefail
+          swift test 2>&1 | tee /tmp/tests.log
+
+      - name: Détail de l'échec
+        if: failure()
+        # Les journaux d'exécution ne sont téléchargeables qu'authentifié ; les annotations,
+        # elles, sont publiques. Sans cette étape, un échec reste indéchiffrable de l'extérieur.
+        run: |
+          echo "::group::Sortie des tests"
+          tail -n 120 /tmp/tests.log || true
+          echo "::endgroup::"
+          grep -E "error:|✘" /tmp/tests.log | head -n 20 | while IFS= read -r line; do
+            printf '::error::%s\n' "$line"
+          done
