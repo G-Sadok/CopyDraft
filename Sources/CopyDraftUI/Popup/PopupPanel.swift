@@ -42,8 +42,21 @@ public final class PopupPanel: NSPanel {
             defer: false
         )
 
-        level = .floating
-        collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary, .stationary]
+        // Au-dessus des fenêtres plein écran, y compris une vidéo : `.floating` (niveau 3)
+        // passe au-dessus des fenêtres ordinaires mais reste sous certaines surfaces plein
+        // écran. `.popUpMenu` place la popup là où se placerait un menu déroulant, sans pour
+        // autant masquer les alertes du système.
+        level = .popUpMenu
+
+        // `.canJoinAllSpaces` fait apparaître la popup sur l'espace **actif**, quel qu'il
+        // soit ; `.fullScreenAuxiliary` l'autorise sur l'espace d'une application en plein
+        // écran.
+        //
+        // `.stationary` a été retiré : il demande à la fenêtre de ne pas suivre les
+        // changements d'espace, ce qui contredit `.canJoinAllSpaces`. Symptôme constaté avec
+        // Chrome en plein écran — la popup s'ouvrait sur l'espace précédent, invisible, et
+        // n'apparaissait qu'en revenant sur cet espace.
+        collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary]
         isOpaque = false
         backgroundColor = .clear
         hasShadow = true
